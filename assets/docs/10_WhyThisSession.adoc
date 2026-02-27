@@ -1,0 +1,30 @@
+= Why this session?
+
+[quote, Sir Charles Anthony Richard Hoare (Tony Hoare) @ QCon London 2009, creator of the `null reference` in 1960's, at QCon London, 2009-06-28]
+____
+I call it my *billion-dollar mistake*. It was the invention of the null reference in 1965. At that time, I was designing the first comprehensive type system for references in an object-oriented language (ALGOL W). My goal was to ensure that all use of references should be absolutely safe, with checking performed automatically by the compiler. But, *I couldn’t resist the temptation to put in a null reference*, simply because it was so easy to implement. This has *led to innumerable errors, vulnerabilities, and system crashes*, which have *probably caused a billion dollars of pain and damage* in the last forty years.
+____
+
+Link: link:https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare[QCon: Null References: The Billion Dollar Mistake]
+
+'''
+
+== Key discussion items
+
+* NullPointerException is still one of the most common production failures.
+* Focus on real solutions, not theoretical ones.
+* This is not about rewriting in any alternate JVM Language such as Groovy or Kotlin.
+* Make your existing code Java nullsafe.
+
+
+
+
+'''
+
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| &nbsp;
+| link:Agenda.adoc[Agenda 🔼]
+| link:20_ProblemStatement.adoc[Problem Statement ▶️]
+|===
+

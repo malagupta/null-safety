@@ -1,0 +1,18 @@
+= Null is ...
+
+
+pass:[<span style="color: maroon;font-weight: bold;font-style: italic;font-size: 100px;">ubiquitous</span>]
+
+== Question - Where can you encounter null
+* Local variables explicitly assigned null
+* Fields and static variables implicitly assigned null values
+* Return values of methods
+
+'''
+
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:21_ProblemStatementScale.adoc[◀️ Problem of Scale]
+| link:Agenda.adoc[Agenda 🔼]
+| link:23_ProblemStatementCodeManagement.adoc[Problem of Code Management ▶️]
+|===

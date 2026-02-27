@@ -1,0 +1,27 @@
+= Agenda
+
+This session covers the following topics:
+
+. [.big]#link:10_WhyThisSession.adoc[Why this session? ▶️ ]# +
+&nbsp;
+. [.big]#link:20_ProblemStatement.adoc[The Problem Statement. ▶️ ]# +
+&nbsp;
+. [.big]#link:30_EarlySolutions.adoc[Early solutions (that still work!) ▶️ ]# +
+&nbsp;
+. [.big]#link:40_CurrentSolutions.adoc[Current null safety styles. ▶️ ]# +
+&nbsp;
+. [.big]#link:50_FutureSolutions.adoc[Future solutions. ▶️ ]# +
+&nbsp;
+. [.big]#link:60_BeyondThisSession.adoc[What else beyond this session. ▶️ ]# +
+&nbsp;
+. [.big]#link:70_Q&A.adoc[Wrap Up / Questions ▶️ ]#
+
+
+'''
+
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| &nbsp;
+| link:../../README.adoc[README 🔼]
+| &nbsp;
+|===
