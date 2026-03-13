@@ -25,10 +25,10 @@ using the right patterns, tools, and language features
 |===
 ^.^a|[qrcode, format="png", xdim=4, subs=attributes, float=left]
 ....
-https://github.com/malagupta/NullSafetyInJava
+https://github.com/malagupta/null-safety
 ....
 .^a| {empty} +
-*Link to content*: link:https://github.com/malagupta/NullSafetyInJava[] +
+*Link to content*: link:https://github.com/malagupta/null-safety[] +
 &#160;
 |===
 '''
