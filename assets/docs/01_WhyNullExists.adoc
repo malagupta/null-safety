@@ -1,0 +1,14 @@
+= Why Null Exists - the common cases
+
+[caption=" ", .center, cols="33%, ^33%, 33%", width=95%, grid=none, frame=]
+|===
+^| *Attributes can be optional* ^| *Attributes can have value _later_* ^| *Attributes are marked for garbage collection*
+| image:../image/Empty.png[]
+| image:../image/LazyCat.jpg[]
+| image:../image/Recycle.png[]
+^| Attributes are _**uninitialized**_ and are thus *null*.
+^| Objects are _**lazily loaded**_ to improve performance, thus are initially *null*.
+^| Explicitly _**mark objects for garbage collection**_ by setting them to *null*.
+
+|===
+

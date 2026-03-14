@@ -1,0 +1,21 @@
+= Modern Java Solutions - Part 2
+:icons: font
+
+== Sealed Classes
+It is possible to replace `null` values with explicit states using Sealed classes.
+
+This guarantees that an _instance_ of a sealed class is always returned instead of a `null` value.
+
+
+[source, java, line, linenums,highlight="5,7"]
+----
+sealed interface CoffeeResult permits Found, NotFound, Unavailable {}
+
+record Found(Coffee coffee) implements CoffeeResult {}
+
+record NotFound(String name) implements CoffeeResult {}      //<1>
+
+record Unavailable(String reason) implements CoffeeResult {} //<1>
+
+----
+<1> Using a state instead of returning a value, prevents `null` returns.

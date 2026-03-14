@@ -1,0 +1,29 @@
+= The Decision Paths
+:icons: font
+
+.Is null a valid domain state, or a bug?
+[width=95%, grid=all, frame=all]
+|===
+| If Valid >| If Bug
+
+| Mark method/variable as `@Nullable` + use `Optional` return type
+>| `Objects.requireNonNull()` at construction
+|===
+
+.Do you control the boundary?
+[width=95%, grid=all, frame=all]
+|===
+| Yes >| No
+
+| `@NullMarked` + `@Nullable` + NullAway in CI
+>| Adapter wraps at boundary with `Optional.ofNullable()`
+|===
+
+.What is your Java version?
+
+* *Java 8 - 11*: `Optional`, `Objects.requireNonNull()`, JSpecify + NullAway
+* *Java 16 +*: Records
+* *Java 17 +*: Sealed Classes/Interfaces
+* *Java 21 +*: Switch null case, pattern matching.
+
+
