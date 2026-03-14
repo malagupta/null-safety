@@ -13,3 +13,12 @@
 
 `Optional.or()` chains sources, `Optional.stream()` keeps pipeline clean.
 
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:06_ModernJavaSolutions3.adoc[◀️ 6. Modern Solutions 3]
+| link:Agenda.adoc[Agenda 🔼]
+| link:08_SolutionDecisions.adoc[8. Solution Decisions ▶️]
+|===
+
+

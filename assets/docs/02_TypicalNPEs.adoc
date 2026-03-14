@@ -27,3 +27,10 @@ Does the call to `findCoffee()` return a null? Wish it read `findCoffeeOrReturnN
 
 *Sprint 4*: same check now hides a data integrity violation -the bug ships silently ☠️‼️
 
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:01_WhyNullExists.adoc[◀️ 1. Why `null` exists]
+| link:Agenda.adoc[Agenda 🔼]
+| link:03_Solutions.adoc[3. Common Solutions  ▶️]
+|===

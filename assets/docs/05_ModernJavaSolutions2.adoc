@@ -19,3 +19,12 @@ record Unavailable(String reason) implements CoffeeResult {} //<1>
 
 ----
 <1> Using a state instead of returning a value, prevents `null` returns.
+
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:04_ModernJavaSolutions1.adoc[◀️ 4. Modern Solutions 1]
+| link:Agenda.adoc[Agenda 🔼]
+| link:06_ModernJavaSolutions3.adoc[6. Modern Solutions 3  ▶️]
+|===

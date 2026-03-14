@@ -12,3 +12,10 @@
 
 |===
 
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| &nbsp;
+| link:Agenda.adoc[Agenda 🔼]
+| link:02_TypicalNPEs.adoc[2. Common NPE issues ▶️]
+|===

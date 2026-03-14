@@ -18,3 +18,11 @@ List<Coffee> menu = List.of(
 );
 ----
 <1> Using null-hostile collections throws NullPointerException upon initialization.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:05_ModernJavaSolutions2.adoc[◀️ 5. Modern Solutions 2]
+| link:Agenda.adoc[Agenda 🔼]
+| link:07_ModernJavaSolutions4.adoc[7. Modern Solutions 4  ▶️]
+|===
