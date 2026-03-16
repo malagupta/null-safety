@@ -1,0 +1,24 @@
+= Modern Java Solutions - Part 4
+:icons: font
+
+== Pattern Matching (Java 16+)
+
+`instanceof` on `null` always returns false — no NPE, no guard needed.
+
+== Switch Null Case (Java 21+)
+
+`null` is first-class case — language handles it explicitly.
+
+== Optional Upgrades (Java 9)
+
+`Optional.or()` chains sources, `Optional.stream()` keeps pipeline clean.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:06_ModernJavaSolutions3.adoc[◀️ 6. Modern Solutions 3]
+| link:Agenda.adoc[Agenda 🔼]
+| link:08_SolutionDecisions.adoc[8. Solution Decisions ▶️]
+|===
+
+

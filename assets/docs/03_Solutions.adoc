@@ -1,0 +1,54 @@
+= NullPointerException - the common solutions
+:icons: font
+
+[caption=" ", .center, cols="^50%, ^50%", width=95%, grid=cols, frame=none]
+|===
+
+<a|
+****
+[.big]
+*⓵ Null Checks (Always Existed)*
+[.small]
+* ✓ Universal, no dependencies
+* ✗ Impossible to enforce, communicates nothing
+
+****
+|&nbsp;
+
+|&nbsp;
+<a|
+****
+[.big]
+*⓶ Annotations (since 2006)*
+[.small]
+* ✓ IDE support caught real bugs
+* ✗ Fractured standards, no enforcement
+****
+
+<a|
+****
+[.big]
+*⓷ Optional (Java 8, since 2014)*
+[.small]
+* ✓ Contract in type system
+* ✗ Existing world unchanged, immediate misuse
+****
+|&nbsp;
+
+|&nbsp;
+<a|
+****
+[.big]
+*⓸ JSpecify + NullAway (since 2024)*
+[.small]
+* ✓ One standard, build enforcement
+* ✓ Non-null default, `@Nullable` marks exceptions
+****
+|===
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:02_TypicalNPEs.adoc[◀️ 2. Common NPE issues]
+| link:Agenda.adoc[Agenda 🔼]
+| link:04_ModernJavaSolutions1.adoc[4. Modern Solutions 1  ▶️]
+|===

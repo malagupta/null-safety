@@ -1,0 +1,29 @@
+= Modern Java Solutions - Part 1
+:icons: font
+
+== Records
+Records have a capability of stopping `null` at construction time.
+
+This prevents any nulls creeping in.
+
+Records are _**effectively final**_ so no issue with mutating values to null after construction.
+
+[source, java, line, linenums,highlight="3,4"]
+----
+record CoffeeOrder(String customerName, Coffee coffee, int shots ) {
+  CoffeeOrder {
+    Objects.requireNonNull(customerName);                    //<1>
+    Objects.requireNonNull(coffee);                          //<1>
+    if (shots < 1 || shots > 4) throw new IllegalArgumentException();
+  }
+}
+----
+<1> Using a compact constructor, checking for nulls prior to constructing record instance.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:03_Solutions.adoc[◀️ 3. Common Solutions]
+| link:Agenda.adoc[Agenda 🔼]
+| link:05_ModernJavaSolutions2.adoc[5. Modern Solutions 2  ▶️]
+|===

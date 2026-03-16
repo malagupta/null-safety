@@ -1,0 +1,28 @@
+= Modern Java Solutions - Part 3
+:icons: font
+
+== Null-hostile collections
+
+The immutable collections returned by Java 9+ factory methods are null-hostile and will throw a NullPointerException if you attempt to store a null value.
+
+* `List.of(...)`
+* `Set.of(...)`
+* `Map.of(...)`
+
+
+[source, java, line, linenums, highlight="3"]
+----
+List<Coffee> menu = List.of(
+ new Coffee("Espresso", "Ethiopian", "Grind fine."),
+ null // NPE fires here, not when iterating later            <1>
+);
+----
+<1> Using null-hostile collections throws NullPointerException upon initialization.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:05_ModernJavaSolutions2.adoc[◀️ 5. Modern Solutions 2]
+| link:Agenda.adoc[Agenda 🔼]
+| link:07_ModernJavaSolutions4.adoc[7. Modern Solutions 4  ▶️]
+|===

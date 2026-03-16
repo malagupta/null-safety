@@ -1,0 +1,26 @@
+= The Future - Project Valhalla
+:icons: font
+
+Project Valhalla offers an out-of-the-box syntax for null-restricted ins.
+
+The syntax (which may change) currently uses an exclamation to indicate non-null variables.
+
+[source, java, line, linenums,highlight="3,4"]
+----
+class Coffee {
+	private String! name;                                    //<1>
+	private RoastType! roastType;                            //<1>
+	private Strength! strength;                              //<1>
+	private Integer rating // = null;                        //<2>
+
+	public Coffee(String name, RoastType roastType, Strength strength) {
+	  this.name = name;
+	  this.roastType = roastType;
+	  this.strength = strength;
+	  this.rating = rating;
+	  super();
+	}
+}
+----
+<1> Null-restricted instance fields.
+<2> Non-restricted instance field.

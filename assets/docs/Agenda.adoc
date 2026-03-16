@@ -2,20 +2,20 @@
 
 This session covers the following topics:
 
-. [.big]#link:10_WhyThisSession.adoc[Why this session? ▶️ ]# +
+. [.big]#link:01_WhyNullExists.adoc[Why Null Exists - the common cases ▶️ ]# +
 &nbsp;
-. [.big]#link:20_ProblemStatement.adoc[The Problem Statement. ▶️ ]# +
+. [.big]#link:02_TypicalNPEs.adoc[Common NPE issues ▶️ ]# +
 &nbsp;
-. [.big]#link:30_EarlySolutions.adoc[Early solutions (that still work!) ▶️ ]# +
+. [.big]#link:03_Solutions.adoc[Common Solutions ▶️ ]# +
 &nbsp;
-. [.big]#link:40_CurrentSolutions.adoc[Current null safety styles. ▶️ ]# +
+. [.big]#Modern Solutions#
+.. [.small]#link:04_ModernJavaSolutions1.adoc[Modern Solutions - Records ▶️ ]#
+.. [.small]#link:05_ModernJavaSolutions2.adoc[Modern Solutions - Sealed Classes ▶️ ]#
+.. [.small]#link:06_ModernJavaSolutions3.adoc[Modern Solutions - Null-hostile Collections ▶️ ]#
+.. [.small]#link:07_ModernJavaSolutions4.adoc[Modern Solutions - Recent Java Enhancements ▶️ ]#
+. [.big]#link:08_SolutionDecisions.adoc[Decision Paths ▶️ ]# +
 &nbsp;
-. [.big]#link:50_FutureSolutions.adoc[Future solutions. ▶️ ]# +
-&nbsp;
-. [.big]#link:60_BeyondThisSession.adoc[What else beyond this session. ▶️ ]# +
-&nbsp;
-. [.big]#link:70_Q&A.adoc[Wrap Up / Questions ▶️ ]#
-
+. [.big]#link:09_TheFuture.adoc[Future solutions. ▶️ ]# +
 
 '''
 

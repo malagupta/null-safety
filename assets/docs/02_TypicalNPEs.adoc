@@ -1,0 +1,36 @@
+= NullPointerException - the common issues
+:icons: font
+
+=== 1. Non-determinism in cause
+[.small]
+[source, java, line, linenums, start=147]
+----
+order.coffee().brewingInstructions().toUpperCase();
+----
+Stack trace indicates NPE on line 147 — but which call caused it?
+
+[.small]
+----
+"Exception in thread "main" java.lang.NullPointerException
+     at App.prepareOrder(App.java:147)
+     at App.main(App.java:10)
+----
+~Java~&nbsp;~14~&nbsp;~*Helpful*~&nbsp;~*NullPointerExceptions*~&nbsp;~helped~&nbsp;~alleviate.~
+
+=== 2. Signatures hide `null` returns
+
+Does the call to `findCoffee()` return a null? Wish it read `findCoffeeOrReturnNull()`?
+
+=== 3. Checks hide future bugs
+
+*Sprint 1*: null check was correct (valid state).
+
+*Sprint 4*: same check now hides a data integrity violation -the bug ships silently ☠️‼️
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:01_WhyNullExists.adoc[◀️ 1. Why `null` exists]
+| link:Agenda.adoc[Agenda 🔼]
+| link:03_Solutions.adoc[3. Common Solutions  ▶️]
+|===
