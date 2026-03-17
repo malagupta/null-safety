@@ -1,0 +1,30 @@
+= JSR-305: Annotations for Software Defect Detection
+
+*JSR-305*:: link:https://jcp.org/en/jsr/detail?id=305[JSR-305: https://jcp.org/en/jsr/detail?id=305]
+
+[quote]
+====
+This JSR would attempt to develop a *standard set of annotations* that can assist defect detection tools. Such annotations have been found to be *useful in tools such as FindBugs and IntelliJ*, but developers are hesitant to invest time in providing annotations if they don't know that their annotations will be portable across tools.
+====
+
+
+==== Features
+* *Nullness annotations* (e.g., `@NonNull` and `@CheckForNull`). Both FindBugs and IntelliJ already support their own versions of nullness annotations.
+
+* *Check return value annotation* - an annotation that says ignoring the return value of a method is likely incorrect (e.g., `String.toLowerCase()`)
+
+* *Taint annotations* - We want to check for errors such as SQL injection and cross-site scripting...
+
+* *Concurrency* - We all know that concurrency is hard and statically detecting concurrency errors is very hard. We can look at the annotations proposed by Java Concurrency In Practice and by the CMU Fluid project as a starting point.
+
+* *Internationalization annotations*, such as `@NonNls` or `@Nls`, indicating values that either are or are not natural language strings that need to be localized for different locations. These annotations are currently used by IntelliJ.
+
+
+'''
+
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| &nbsp;
+| link:03_Solutions.adoc[Solutions 🔼]
+| &nbsp;
+|===

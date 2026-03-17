@@ -25,5 +25,5 @@ record CoffeeOrder(String customerName, Coffee coffee, int shots ) {
 |===
 | link:03_Solutions.adoc[◀️ 3. Common Solutions]
 | link:Agenda.adoc[Agenda 🔼]
-| link:05_ModernJavaSolutions2.adoc[5. Modern Solutions 2  ▶️]
+| link:04_ModernJavaSolutions1b.adoc[4b. Modern Solutions ▶️]
 |===

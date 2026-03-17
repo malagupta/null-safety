@@ -3,12 +3,13 @@
 
 == Null-hostile collections
 
-The immutable collections returned by Java 9+ factory methods are null-hostile and will throw a NullPointerException if you attempt to store a null value.
+The immutable collections returned by Java 9+ factory methods are null-hostile and will throw a `*NullPointerException*` if you attempt to store a `null` value.
 
 * `List.of(...)`
 * `Set.of(...)`
 * `Map.of(...)`
 
+`*Hashtable*`, `*TreeMap*`, `*ConcurrentHashMap*` and `*PriorityQueue*`: do not accept null keys or values at all.
 
 [source, java, line, linenums, highlight="3"]
 ----
@@ -17,7 +18,7 @@ List<Coffee> menu = List.of(
  null // NPE fires here, not when iterating later            <1>
 );
 ----
-<1> Using null-hostile collections throws NullPointerException upon initialization.
+<1> Using null-hostile collections throws `*NullPointerException*` upon initialization.
 
 '''
 [caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]

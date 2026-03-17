@@ -13,9 +13,9 @@
 * ✗ Impossible to enforce, communicates nothing
 
 ****
-|&nbsp;
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Null&nbsp;Check&nbsp;And&nbsp;Null&nbsp;Hell~] ~(see&nbsp;line&nbsp;17&nbsp;onwards)~
 
-|&nbsp;
+.^|~*Excerpt*:&nbsp;~link:03_JSR305.adoc[~About&nbsp;JSR-305~]
 <a|
 ****
 [.big]
@@ -33,13 +33,14 @@
 * ✓ Contract in type system
 * ✗ Existing world unchanged, immediate misuse
 ****
-|&nbsp;
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Optional&nbsp;in&nbsp;Java~] ~(see&nbsp;line&nbsp;115&nbsp;onwards)~
 
-|&nbsp;
+
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/Demo3_WhatWasTried.java[~JSpecify&nbsp;in&nbsp;Java~]
 <a|
 ****
 [.big]
-*⓸ JSpecify + NullAway (since 2024)*
+*⓸ JSpecify (since 2024)*
 [.small]
 * ✓ One standard, build enforcement
 * ✓ Non-null default, `@Nullable` marks exceptions

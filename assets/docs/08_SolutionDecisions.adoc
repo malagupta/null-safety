@@ -10,6 +10,8 @@
 >| `Objects.requireNonNull()` at construction
 |===
 
+&nbsp;
+
 .Do you control the boundary?
 [width=95%, grid=all, frame=all]
 |===
@@ -19,6 +21,8 @@
 >| Adapter wraps at boundary with `Optional.ofNullable()`
 |===
 
+&nbsp;
+
 .What is your Java version?
 
 * *Java 8 - 11*: `Optional`, `Objects.requireNonNull()`, JSpecify + NullAway
@@ -26,4 +30,10 @@
 * *Java 17 +*: Sealed Classes/Interfaces
 * *Java 21 +*: Switch null case, pattern matching.
 
-
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:07_ModernJavaSolutions4.adoc[◀️ 7. Modern Solutions 4]
+| link:Agenda.adoc[Agenda 🔼]
+| link:09_TheFuture.adoc[9. The Future ▶️]
+|===

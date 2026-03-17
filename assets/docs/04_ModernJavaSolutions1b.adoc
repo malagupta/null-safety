@@ -1,0 +1,21 @@
+= Modern Java Solutions - Part 1b
+:icons: font
+
+== Records
+Records have a capability of handling `null` at _**deconstruction**_ time.
+
+Pattern-matching effctively eliminates nulls as matched values.
+
+[source, java, line, linenums,highlight="3,4"]
+----
+include::../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[lines="79..92"]
+----
+<1> Pattern matching eliminates nulls as possible matches implicitly.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:03_Solutions.adoc[◀️ 3. Common Solutions]
+| link:Agenda.adoc[Agenda 🔼]
+| link:05_ModernJavaSolutions2.adoc[5. Modern Solutions 2  ▶️]
+|===

@@ -1,0 +1,26 @@
+= Why Null Exists - the common cases
+
+
+:figure-caption!:
+
+ifdef::env-github[]
+++++
+<p align="center">
+  <img width="400" src="assets/image/DukeNull.png" alt="Duke Null">
+</p>
+++++
+endif::[]
+
+ifndef::env-github[]
+image::../image/WhyNullValues.jpg[Uncle Sam, 400, align=center]
+endif::[]
+
+
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| &nbsp;
+| link:Agenda.adoc[Agenda 🔼]
+| link:01_WhyNullExists.adoc[1. Why Null exists ▶️]
+|===

@@ -24,3 +24,11 @@ class Coffee {
 ----
 <1> Null-restricted instance fields.
 <2> Non-restricted instance field.
+
+'''
+[caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
+|===
+| link:08_SolutionDecisions.adoc[◀️ 8. Solution Decisions]
+| link:Agenda.adoc[Agenda 🔼]
+| &nbsp;
+|===

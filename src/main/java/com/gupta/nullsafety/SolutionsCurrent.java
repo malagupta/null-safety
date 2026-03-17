@@ -77,10 +77,11 @@ public class SolutionsCurrent {
         }
 
         boolean checkFirstNameAndCountryCodeAgain (Object obj) {
-            if (obj instanceof Passenger(Name (String fName, String lName),
-                                         PhoneNumber phoneNumber,
-                                         Country from,
-                                         Country (String countryCode, String countryName) )) {
+            if (obj instanceof Passenger(
+					Name (String fName, String lName),       //<1>
+					PhoneNumber phoneNumber,
+					Country from,
+					Country (String countryCode, String countryName) )) {
 
                 if (fName != null && countryCode != null) {
                     return fName.startsWith("Simo") && countryCode.equals("PRG");
@@ -101,7 +102,7 @@ public class SolutionsCurrent {
             menu.put("newblend", new Coffee("New Blend", "Rwandan",   null));
         }
 
-        @Nullable Coffee findByNameNotUsingOptional(@NotNull String name) {
+        Coffee findByNameNotUsingOptional(@NotNull String name) {
             return menu.get(name);
         }
 

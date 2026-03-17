@@ -2,7 +2,7 @@
 
 This session covers the following topics:
 
-. [.big]#link:01_WhyNullExists.adoc[Why Null Exists - the common cases ▶️ ]# +
+. [.big]#link:01_WhyNullExists_Audience.adoc[Why Null Exists ▶️ ]# +
 &nbsp;
 . [.big]#link:02_TypicalNPEs.adoc[Common NPE issues ▶️ ]# +
 &nbsp;
