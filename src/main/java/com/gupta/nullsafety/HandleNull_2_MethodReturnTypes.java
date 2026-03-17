@@ -117,7 +117,7 @@ public class HandleNull_2_MethodReturnTypes {
         // If you're still on Java 11 — I'm sorry. And also, upgrade."
     }
 
-    // Use case 2.4 : The Integer unboxing surprise ──────────────────────────────
+    // Use case 2.4 : The Integer unboxing surprise ─ someone else calling a method on your reference variable ─────────────────────────────
     //
     // Chandra/ Mala
     // This one is my favourite to show senior developers because it looks
@@ -134,7 +134,9 @@ public class HandleNull_2_MethodReturnTypes {
 
         IO.println("Temperature field: " + order.temperatureC); // prints null — fine
 
-        int temp = order.temperatureC; // NPE — unboxing null Integer to primitive int
+        int temp = order.temperatureC;  // NPE — unboxing null Integer to primitive int
+                                        // When temperatureC is unboxed to temp, the
+                                        // compiler automatically calls temperatureC.intValue()
 
         // Same trap in a comparison — also common
         if (order.temperatureC == 65) { // NPE - also unboxes — also NPE

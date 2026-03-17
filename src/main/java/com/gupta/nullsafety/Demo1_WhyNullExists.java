@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  *  (MALA/ Mala doesn't mean Mala will say this. It means
- *  Mala has summarised stuff or is unsure about it.
+ *  Mala has summarised stuff or is unsure about it.)
  *  * --------------------------------------------
  *  *  MALA: Three points
  *  *  a) null is everywhere, not because it was an accident or a mistake. It was a decision.

@@ -479,9 +479,11 @@ public class Demo7_ModernJava9to26 {
         //  This becomes significant when records have nullable fields —
         //  you can match on presence without binding a variable you'd null-check."
 
-        sealed interface DrinkOrder permits DrinkOrder.Hot, DrinkOrder.Cold {}
+/*
+        sealed interface DrinkOrder permits Hot, Cold {}
         record Hot(Coffee coffee, int tempC, @Nullable String milkType) implements DrinkOrder {}
         record Cold(Coffee coffee, int iceLevel) implements DrinkOrder {}
+
 
         List<DrinkOrder> drinks = List.of(
                 new Hot(new Coffee("Espresso", "Ethiopian", null), 90, null),
@@ -502,7 +504,7 @@ public class Demo7_ModernJava9to26 {
             };
             System.out.println("_ pattern : " + desc);
         });
-
+ */
         // SCRIPT:
         // "The _ in the Hot pattern discards tempC entirely.
         //  The pattern still matches. The field is still there.

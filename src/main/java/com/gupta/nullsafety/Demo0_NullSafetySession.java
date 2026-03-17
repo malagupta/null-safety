@@ -685,7 +685,7 @@ public class Demo0_NullSafetySession {
     //  Here is the same lookup with a sealed return type."
 
     sealed interface CoffeeResult
-            permits CoffeeResult.Found, CoffeeResult.NotFound, CoffeeResult.Unavailable {}
+            permits Found, NotFound, Unavailable {}
     record Found(Coffee coffee)        implements CoffeeResult {}
     record NotFound(String name)       implements CoffeeResult {}
     record Unavailable(String reason)  implements CoffeeResult {}

@@ -1,11 +1,11 @@
 package com.gupta.nullsafety;
 
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -49,15 +49,15 @@ public class Demo3_WhatWasTried {
     // "Era one. Null checks. The oldest tool. Still relevant.
     //  Let me show you the full spectrum — from correct to catastrophic."
 
-    // ✅ Correct — check at the boundary, one guard, clear message
-    static String serve_correct(Order order) {
+    // 😊 Check at the boundary, one guard, clear message
+    static String serveCorrect(Order order) {
         Coffee coffee = order.coffee();
         if (coffee == null) return "No coffee on this order.";
         return coffee.name();
     }
 
-    // ❌ The anti-pattern — null check hell. This is what happens at scale.
-    static String serve_nullCheckHell(Order order) {
+    // 😈 Null check hell
+    static String serveNullCheckHell(Order order) {
         if (order != null) {
             if (order.coffee() != null) {
                 if (order.coffee().name() != null) {
@@ -82,9 +82,9 @@ public class Demo3_WhatWasTried {
         Order goodOrder  = new Order("Alice", new Coffee("Espresso", "Ethiopian", "Grind fine."));
         Order emptyOrder = new Order("Bob",   null);
 
-        System.out.println("Correct    : " + serve_correct(goodOrder));
-        System.out.println("Correct    : " + serve_correct(emptyOrder));
-        System.out.println("Hell       : " + serve_nullCheckHell(goodOrder));
+        System.out.println("Correct    : " + serveCorrect(goodOrder));
+        System.out.println("Correct    : " + serveCorrect(emptyOrder));
+        System.out.println("Hell       : " + serveNullCheckHell(goodOrder));
 
         // Chandra/ Mala:
         // "serve_correct — clean. One guard. One message. This is null checks done right.
@@ -128,7 +128,7 @@ public class Demo3_WhatWasTried {
     //  pressure ignores a yellow squiggle. No enforcement = no guarantee."
 
     // The intent was right — the annotation declares the contract
-    // @Nullable  Coffee findByName(@NonNull String name)  ← JSR-305 idea
+    // @Nullable  Coffee findByName(@NotNull String name)  // ← JSR-305 idea
     // Problem: which @Nullable? Which tool enforces it? No standard.
 
     // ─────────────────────────────────────────────────────────────────────
@@ -179,7 +179,7 @@ public class Demo3_WhatWasTried {
             System.out.println("Error    : " + e.getMessage());
         }
 
-        // ❌ THE ANTI-PATTERN — Optional.get() without checking
+        // Optional.get() without checking
         // Chandra/ Mala:
         // "And here's the one that makes me genuinely sad.
         //  Optional.get() without isPresent() first.
@@ -307,6 +307,7 @@ public class Demo3_WhatWasTried {
     //  The code does not compile.
     //  That's the gap JSR-305 never closed."
 
+    // TODO: Remove conversation hints, rename methods.
     static void demo_Era4() {
         System.out.println("\n══ ERA 4: JSpecify @NullMarked ══");
 

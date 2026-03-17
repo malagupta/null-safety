@@ -295,7 +295,7 @@ public class Demo00_LiveCode {
     // ─────────────────────────────────────────────────────────────────────
 
     sealed interface CoffeeResult
-            permits CoffeeResult.Found, CoffeeResult.NotFound {}
+            permits Found, NotFound {}
 
     record Found(Coffee coffee)    implements CoffeeResult {}
     record NotFound(String name)   implements CoffeeResult {}

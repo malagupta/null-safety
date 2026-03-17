@@ -22,6 +22,7 @@ package com.gupta.nullsafety;
 import java.util.Objects;
 import java.util.Optional;
 
+/*
 public class HandleNull_1_ReferenceVariable_Solution4_Valhalla {
 
     // ── Records ───────────────────────────────────────────────────────────────
@@ -193,4 +194,4 @@ public class HandleNull_1_ReferenceVariable_Solution4_Valhalla {
         //    String   — This might be null. Handle it. Optional helps at return boundaries.
         //    No annotation. No tool. No discipline. Just the type.
     }
-}
+}*/
