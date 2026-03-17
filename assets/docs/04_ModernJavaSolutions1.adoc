@@ -8,15 +8,9 @@ This prevents any nulls creeping in.
 
 Records are _**effectively final**_ so no issue with mutating values to null after construction.
 
-[source, java, line, linenums,highlight="3,4"]
+[source, java, line, linenums,indent=0, highlight="3,4"]
 ----
-record CoffeeOrder(String customerName, Coffee coffee, int shots ) {
-  CoffeeOrder {
-    Objects.requireNonNull(customerName);                    //<1>
-    Objects.requireNonNull(coffee);                          //<1>
-    if (shots < 1 || shots > 4) throw new IllegalArgumentException();
-  }
-}
+include::../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[lines="52..59"]
 ----
 <1> Using a compact constructor, checking for nulls prior to constructing record instance.
 

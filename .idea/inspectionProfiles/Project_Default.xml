@@ -1286,12 +1286,12 @@
     <inspection_tool class="NonFinalFieldInEnum" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NonStrictComparisonCanBeEquality" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="NonVarPropertyInExternalInterface" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="NotNullFieldNotInitialized" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NotNullFieldNotInitialized" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="NpmUsedModulesInstalled" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="NullArgumentToVariableArgMethod" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NullChecksToSafeCall" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NullableBooleanElvis" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="NullableProblems" enabled="false" level="WARNING" enabled_by_default="false">
+    <inspection_tool class="NullableProblems" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES">
       <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
       <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
       <option name="REPORT_NOTNULL_PARAMETER_OVERRIDES_NULLABLE" value="true" />
@@ -2047,7 +2047,7 @@
         </value>
       </option>
     </inspection_tool>
-    <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="false" checkParameterExcludingHierarchy="false">
+    <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="false" checkParameterExcludingHierarchy="false" isSelected="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />
       <option name="METHOD" value="true" />

@@ -21,7 +21,7 @@ Stack trace indicates NPE on *line 147* — but which call caused it?
 
 Does the call to `findCoffee()` return a null? Wish it read `*findCoffeeOrReturnNull()*`?
 
-=== 3. Checks hide future bugs
+=== 3. Hidden future bugs
 
 *Sprint 1*: null check was not needed (only valid values returned).
 

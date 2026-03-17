@@ -13,7 +13,8 @@
 * ✗ Impossible to enforce, communicates nothing
 
 ****
-.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Null&nbsp;Check&nbsp;And&nbsp;Null&nbsp;Hell~] ~(see&nbsp;line&nbsp;17&nbsp;onwards)~
+
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Null&nbsp;Check&nbsp;And&nbsp;Null&nbsp;Hell~] ~(see&nbsp;line&nbsp;19&nbsp;onwards)~
 
 .^|~*Excerpt*:&nbsp;~link:03_JSR305.adoc[~About&nbsp;JSR-305~]
 <a|
@@ -33,10 +34,10 @@
 * ✓ Contract in type system
 * ✗ Existing world unchanged, immediate misuse
 ****
-.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Optional&nbsp;in&nbsp;Java~] ~(see&nbsp;line&nbsp;115&nbsp;onwards)~
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[~Optional&nbsp;in&nbsp;Java~] ~(see&nbsp;line&nbsp;89&nbsp;onwards)~
 
 
-.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/Demo3_WhatWasTried.java[~JSpecify&nbsp;in&nbsp;Java~]
+.^|~*Example*:&nbsp;~link:../../src/main/java/com/gupta/nullsafety/SolutionsJSpecify.java[~JSpecify&nbsp;in&nbsp;Java~]
 <a|
 ****
 [.big]

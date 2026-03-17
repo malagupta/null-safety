@@ -17,7 +17,7 @@
 |===
 | Yes >| No
 
-| `@NullMarked` + `@Nullable` + NullAway in CI
+| `@NullMarked` + `@Nullable`
 >| Adapter wraps at boundary with `Optional.ofNullable()`
 |===
 

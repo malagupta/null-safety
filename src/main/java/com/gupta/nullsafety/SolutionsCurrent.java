@@ -5,15 +5,21 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class SolutionsCurrent {
 
-    static class NullChecks {
-        record Coffee(String name, String origin, String brewingInstructions) {}
-        record Order(String customerName, Coffee coffee) {}
 
-        // 😊 Check at the boundary, one guard, clear message
+	record Coffee(String name, String origin, String brewingInstructions) {}
+	record Inventory(Coffee coffee, String brewingSuggestion){}
+	record Order(String customerName, Coffee coffee) {}
+	record Customer(String name, String email, String brewingPreference){}
+
+	static class DetectingNulls {
+
+        //Detect nulls in a method call chain
+		// 😊 Check at the boundary, one guard, clear message
         static String serveCorrect(Order order) {
             Coffee coffee = order.coffee();
             if (coffee == null) return "No coffee on this order.";
@@ -41,59 +47,46 @@ public class SolutionsCurrent {
         }
     }
 
-    static class ModernJavaRecordPatterns {
-        record Name       (String fName, String lName) { }
-        record PhoneNumber(String areaCode, String number) { }
-        record Country    (String countryCode, String countryName) { }
-        record Passenger  (Name name,
-                           PhoneNumber phoneNumber,
-                           Country from,
-                           Country destination) { }
+    static class JavaRecordPatterns {
 
-        boolean checkFirstNameAndCountryCode (Object obj) {
-            if (obj != null) {
-                if (obj instanceof Passenger passenger) {
-                    Name name = null;
-                    Country destination = null;
+		record CoffeeOrder(String customerName, Coffee coffee, int shots) {
+			CoffeeOrder {
+				Objects.requireNonNull(customerName);        //<1>
+				Objects.requireNonNull(coffee);              //<1>
+				if (shots < 1 || shots > 4)
+					throw new IllegalArgumentException();
+			}
+		}
 
-                    if (passenger.name() != null) {
-                        name = passenger.name();
+		boolean hasBrewingInstructions(Object obj) {
+			if (obj != null) {
+				if (obj instanceof CoffeeOrder coffeeOrder) {
+					if (coffeeOrder.coffee() != null) {
+						return coffeeOrder.coffee().brewingInstructions() != null;
+					}
+				}
+			}
+			return false;
+		}
 
-                        if (passenger.destination() != null) {
-                            destination = passenger.destination();
+		boolean hasBrewingInstructionsAgain(Object obj) {
+			if (obj instanceof CoffeeOrder(
+					String _,
+					Coffee(
+							String _,
+							String _,
+							String brewingInstructions       //<1>
+					),
+					int _
+			)) {
+				return brewingInstructions != null;
+			}
+			return false;
+		}
+	}
 
-                            String fName = name.fName();
-                            String countryCode = destination.countryCode();
 
-                            if (fName != null && countryCode != null) {
-                                return fName.startsWith("Simo") &&
-                                       countryCode.equals("PRG");
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        boolean checkFirstNameAndCountryCodeAgain (Object obj) {
-            if (obj instanceof Passenger(
-					Name (String fName, String lName),       //<1>
-					PhoneNumber phoneNumber,
-					Country from,
-					Country (String countryCode, String countryName) )) {
-
-                if (fName != null && countryCode != null) {
-                    return fName.startsWith("Simo") && countryCode.equals("PRG");
-                }
-            }
-            return false;
-        }
-    }
-
-    static class AnnotationsCheck {
-        record Coffee(String name, String origin, String brewingInstructions) {}
-        record Order(String customerName, Coffee coffee) {}
+    static class UsingOptional {
 
         private static final Map<String, Coffee> menu = new HashMap<>();
         static {
@@ -106,7 +99,8 @@ public class SolutionsCurrent {
             return menu.get(name);
         }
 
-        // Before Optional — caller has no idea
+        //Detect Optionals in a method call chain
+		// Before Optional — caller has no idea
         static Coffee findByName_unsafe(String name) {
             return menu.get(name.toLowerCase()); // null if not found — caller doesn't know
         }
@@ -147,7 +141,5 @@ public class SolutionsCurrent {
 
         }
     }
-    
-
 }
 

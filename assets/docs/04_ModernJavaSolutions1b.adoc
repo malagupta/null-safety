@@ -6,9 +6,9 @@ Records have a capability of handling `null` at _**deconstruction**_ time.
 
 Pattern-matching effctively eliminates nulls as matched values.
 
-[source, java, line, linenums,highlight="3,4"]
+[source, java, line, linenums,indent=0,highlight="7,11"]
 ----
-include::../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[lines="79..92"]
+include::../../src/main/java/com/gupta/nullsafety/SolutionsCurrent.java[lines="72..85"]
 ----
 <1> Pattern matching eliminates nulls as possible matches implicitly.
 

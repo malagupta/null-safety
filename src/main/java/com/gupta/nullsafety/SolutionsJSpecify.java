@@ -15,7 +15,6 @@ public class SolutionsJSpecify {
         if (coffee == null) {
             System.out.println("@Nullable  : caught — coffee absent, handled cleanly");
         } else {
-            // @Nullable on brewingInstructions — must check before calling toUpperCase()
             String instr = coffee.brewingInstructions();
             String result = (instr != null) ? instr.toUpperCase() : "No instructions";
             System.out.println("@Nullable  : " + result);
