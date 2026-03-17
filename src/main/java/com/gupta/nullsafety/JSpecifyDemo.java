@@ -93,7 +93,7 @@ public class JSpecifyDemo {
         System.out.println("Full    : " + espresso.name() + " / " + espresso.brewingInstructions());
 
         // ✅ brewingInstructions is @Nullable — null accepted
-        Coffee newBlend = new Coffee("New Blend", "Rwandan", null);
+        CoffeeV2 newBlend = new CoffeeV2("New Blend", "Rwandan", null);
         System.out.println("No instr: " + newBlend.name() + " / instructions=" + newBlend.brewingInstructions());
 
         // ✅ coffee is @Nullable on Order — customer exists, choice pending
