@@ -1,0 +1,383 @@
+= Live-Coding Session Script: Null Safety in Modern Java
+:icons: font
+:toc: left
+:toc-title: Steps
+:toclevels: 2
+
+== Before you start
+
+**File to keep open:**  `LiveCodingSession.java` +
+**Reference (completed code):** `JSpecifyDemo.java`, `SolutionsCurrent.java` +
+**Run config:** `LiveCodingSession.main()` +
+**Font size:** 20+, wrap long lines OFF, line numbers ON
+
+[NOTE]
+Each step ends with _"Let me run it"_ → run `main()` → show output.
+Uncomment the NPE line in step 1, then re-comment it before moving on.
+
+'''
+
+== Step 0 — Framing (no code, ~2 min)
+
+*Show:* `Agenda.adoc` → `01_WhyNullExists.adoc` → `02_TypicalNPEs.adoc`
+
+*Say:*
+
+* Tony Hoare, 1965: "I call it my billion-dollar mistake."
+* Three reasons null exists: optional attribute, lazy load, GC marker.
+* Three reasons it hurts: non-determinism in stack traces, signatures hide null returns, defensive null checks bury real bugs.
+* Today: six practical techniques, live code, all runnable.
+
+'''
+
+== Step 1 — The problem (2 min)
+
+*Show:* `02_TypicalNPEs.adoc`
+
+*In `LiveCodingSession.java`, inside `step1_TheProblem()`:*
+
+[source,java]
+----
+Order order = new Order("Alice", null);
+System.out.println(order.coffee().name()); // <-- uncomment this
+----
+
+*Run it.* Output:
+
+----
+Exception in thread "main" java.lang.NullPointerException
+    at LiveCodingSession.step1_TheProblem(LiveCodingSession.java:...)
+----
+
+*Say:*
+
+* `Order(String, Coffee)` — nothing in the signature says `coffee` can be null.
+* The NPE lands at `.name()`, not at the `new Order(...)` call where null was introduced.
+* In a real stack trace, these are 20 frames apart.
+
+*Re-comment the crashing line before continuing.*
+
+'''
+
+== Step 2 — Null checks: boundary guard vs. null check hell (~3 min)
+
+*Show:* `03_Solutions.adoc` (Null Checks section)
+
+*Above `step2_NullChecks()`, type:*
+
+[source,java]
+----
+static String serve(Order order) {
+    Coffee coffee = order.coffee();
+    if (coffee == null) return "No coffee on this order.";
+    return coffee.name();
+}
+----
+
+*Inside `step2_NullChecks()`:*
+
+[source,java]
+----
+System.out.println(serve(new Order("Alice", null)));
+System.out.println(serve(new Order("Bob",
+        new Coffee("Espresso", "Ethiopian", "Grind fine."))));
+----
+
+*Run it.* Expected output:
+
+----
+── Step 2: Null checks ──
+No coffee on this order.
+Espresso
+----
+
+*Say:* One guard at the boundary, clear message. +
+Now show the alternative — paste `serveNullCheckHell` from the comment block (or from `SolutionsCurrent.java:30`). Show it to the audience. Don't run it. Delete/collapse it.
+
+*Say:* Every nested `if` is a question you forgot to ask at the boundary.
+
+'''
+
+== Step 3 — Optional: contract in the type (~4 min)
+
+*Show:* `03_Solutions.adoc` (Optional section)
+
+*Type the method above `step3_Optional()`:*
+
+[source,java]
+----
+static Optional<Coffee> findByName(String name) {
+    return Optional.ofNullable(MENU.get(name));
+}
+----
+
+*Inside `step3_Optional()`:*
+
+[source,java]
+----
+// Caller sees Optional<Coffee> — absence is in the type
+String found = findByName("espresso")
+        .map(Coffee::name)
+        .map(String::toUpperCase)
+        .orElse("Not found");
+System.out.println("Found   : " + found);
+
+String missing = findByName("coldpresso")
+        .map(Coffee::name)
+        .orElse("Not on menu — try our cold brew");
+System.out.println("Missing : " + missing);
+
+// orElseThrow — absence is an error
+findByName("coldpresso")
+        .orElseThrow(() ->
+                new IllegalStateException("coldpresso must be configured"));
+----
+
+*Run it.* Expected output:
+
+----
+── Step 3: Optional ──
+Found   : ESPRESSO
+Missing : Not on menu — try our cold brew
+Exception in thread "main" java.lang.IllegalStateException: coldpresso must be configured
+----
+
+*Say:*
+
+* `Optional<Coffee>` is the contract. Callers know to handle absence.
+* `.map()` skips the chain if empty — no null checks needed inside.
+* `.orElseThrow()` is the explicit "this should have existed" signal.
+* **Anti-pattern:** `.get()` without `.isPresent()` — same as a null deref, just wrapped. Never use it.
+
+[TIP]
+Optional is for *return types* only. Not fields. Not parameters. Not collections.
+
+'''
+
+== Step 4 — Records: fail fast at construction (~3 min)
+
+*Show:* `04_ModernJavaSolutions1.adoc`
+
+*Type the record inside the class (above `step4_Records()`):*
+
+[source,java]
+----
+record CoffeeOrder(String customerName, Coffee coffee, int shots) {
+    CoffeeOrder {
+        Objects.requireNonNull(customerName);
+        Objects.requireNonNull(coffee);
+        if (shots < 1 || shots > 4) throw new IllegalArgumentException();
+    }
+}
+----
+
+*Inside `step4_Records()`:*
+
+[source,java]
+----
+Coffee espresso = new Coffee("Espresso", "Ethiopian", "Grind fine.");
+CoffeeOrder good = new CoffeeOrder("Alice", espresso, 2);
+System.out.println("Good : " + good.customerName() + " / " + good.coffee().name());
+
+try {
+    CoffeeOrder bad = new CoffeeOrder("Bob", null, 1);
+} catch (NullPointerException e) {
+    System.out.println("Null rejected at construction, not later");
+}
+----
+
+*Run it.* Expected output:
+
+----
+── Step 4: Records — fail fast ──
+Good : Alice / Espresso
+Null rejected at construction, not later
+----
+
+*Say:*
+
+* Compact constructor runs before the record instance exists.
+* Null is rejected at the earliest possible moment — construction.
+* Records are effectively final: no mutating a field to null after the fact.
+* **Bonus:** show `04_ModernJavaSolutions1b.adoc` — pattern matching deconstructs records without needing null checks for each level.
+
+'''
+
+== Step 5 — JSpecify: @NullMarked + @Nullable (~6 min)
+
+*Show:* `03_Solutions.adoc` (JSpecify section) → `08_SolutionDecisions.adoc`
+
+*Add `@NullMarked` to the class declaration:*
+
+[source,java]
+----
+@NullMarked
+public class LiveCodingSession {
+----
+
+*Say:* Every field, parameter, and return type in this class is now non-null *by default*. Silence means non-null. `@Nullable` breaks the silence deliberately.
+
+*Add these two records (above `step5_JSpecify()`):*
+
+[source,java]
+----
+record CoffeeV2(
+        String name,
+        String origin,
+        @Nullable String brewingInstructions   // absence is valid
+) {}
+
+record OrderV2(
+        String customerName,
+        @Nullable CoffeeV2 coffee              // customer may not have chosen yet
+) {}
+----
+
+*Inside `step5_JSpecify()`:*
+
+[source,java]
+----
+// @Nullable coffee is allowed — the annotation makes it explicit
+OrderV2 pending = new OrderV2("Jonathan", null);
+System.out.println("Pending : " + pending.customerName() + " / coffee=" + pending.coffee());
+
+// Safe: check before dereference
+if (pending.coffee() != null) {
+    System.out.println("Coffee  : " + pending.coffee().name());
+} else {
+    System.out.println("No coffee yet");
+}
+
+// NullAway would REJECT this (show it, don't run):
+// String name = pending.coffee().name();  // dereference @Nullable without check
+----
+
+*Run it.* Expected output:
+
+----
+── Step 5: JSpecify @NullMarked / @Nullable ──
+Pending : Jonathan / coffee=null
+No coffee yet
+----
+
+*Say:*
+
+* Without NullAway, the annotations are documentation — enforced by convention.
+* With NullAway (a build plugin), the commented line becomes a *compile error*, not a runtime NPE.
+* Reference `JSpecifyDemo.java` for the full five-demo version: return types, parameters, chained access.
+
+[source,xml]
+.NullAway pom.xml snippet (show in editor):
+----
+<arg>-XepOpt:NullAway:AnnotatedPackages=com.gupta.nullsafety</arg>
+<arg>-XepOpt:NullAway:JSpecifyMode=true</arg>
+----
+
+'''
+
+== Step 6 — @NullUnmarked: legacy bridge (~3 min)
+
+*Show:* `08_SolutionDecisions.adoc` ("Do you control the boundary?")
+
+*Point to `LegacyCoffeeApi` in the starter file.* It's already there. Explain `@NullUnmarked`.
+
+*Type `findFromLegacy` above `step6_LegacyBridge()`:*
+
+[source,java]
+----
+static Optional<Coffee> findFromLegacy(String name) {
+    return Optional.ofNullable(LegacyCoffeeApi.findLegacy(name));
+}
+----
+
+*Inside `step6_LegacyBridge()`:*
+
+[source,java]
+----
+findFromLegacy("espresso")
+        .ifPresentOrElse(
+            c  -> System.out.println("Legacy found   : " + c.name()),
+            () -> System.out.println("Legacy missing : espresso")
+        );
+
+findFromLegacy("coldpresso")
+        .ifPresentOrElse(
+            c  -> System.out.println("Legacy found   : " + c.name()),
+            () -> System.out.println("Legacy missing : coldpresso")
+        );
+----
+
+*Run it.* Expected output:
+
+----
+── Step 6: @NullUnmarked legacy bridge ──
+Legacy found   : Espresso
+Legacy missing : coldpresso
+----
+
+*Say:*
+
+* `@NullUnmarked` tells NullAway: "I know this code is unsafe — don't enforce here."
+* `Optional.ofNullable` is the containment wall. Null never crosses this boundary inward.
+* One adapter method. Every caller inside `@NullMarked` territory is safe.
+
+'''
+
+== Step 7 — Decision guide + the future (~2 min, no new code)
+
+*Show:* `08_SolutionDecisions.adoc`
+
+*Recap the three questions:*
+
+[cols="1,2"]
+|===
+| *Is null a valid domain state?*
+| Yes → `@Nullable` + `Optional` return type +
+  No  → `Objects.requireNonNull` at construction
+
+| *Do you control the boundary?*
+| Yes → `@NullMarked` + `@Nullable` throughout +
+  No  → adapter wraps with `Optional.ofNullable` at the edge
+
+| *What Java version?*
+| 8–11: Optional + requireNonNull + JSpecify+NullAway +
+  16+: add Records +
+  17+: add Sealed classes +
+  21+: add switch null case, pattern matching
+|===
+
+*Show:* `09_TheFuture.adoc`
+
+*Say:* Project Valhalla proposes `String!` — a non-null instance variable in the language itself. Until then, JSpecify+NullAway is the closest we have to compiler-enforced null safety in Java.
+
+'''
+
+== Full expected output (final state)
+
+----
+── Step 1: The NPE problem ──
+── Step 2: Null checks ──
+No coffee on this order.
+Espresso
+── Step 3: Optional ──
+Found   : ESPRESSO
+Missing : Not on menu — try our cold brew
+[IllegalStateException thrown]
+── Step 4: Records — fail fast ──
+Good : Alice / Espresso
+Null rejected at construction, not later
+── Step 5: JSpecify @NullMarked / @Nullable ──
+Pending : Jonathan / coffee=null
+No coffee yet
+── Step 6: @NullUnmarked legacy bridge ──
+Legacy found   : Espresso
+Legacy missing : coldpresso
+----
+
+== Completed reference
+
+For any step you run out of time on, the full completed versions are in:
+
+* `SolutionsCurrent.java` — Steps 1–4
+* `JSpecifyDemo.java` — Step 5 (5 full demos) and Step 6
+* `SolutionsJSpecify.java` — minimal JSpecify example
