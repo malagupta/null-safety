@@ -9,14 +9,22 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Live-coding starter — Null Safety in Modern Java
+ * Live-coding session — Approach 2: Start with AI, close with AI.
  *
- * Run main() after each step to see the output change.
- * Each TODO marks exactly what to type during the session.
+ * Flow:
+ *   Act 0 — Same prompt to AI, no CLAUDE.md rules → NPE
+ *   Act 1 — Why: null is invisible in the type system
+ *   Act 2 — Fix: null check at the boundary
+ *   Act 3 — Fix: Optional puts absence in the type
+ *   Act 4 — Fix: Records + JSpecify encode the contract
+ *   Act 5 — Close the loop: update CLAUDE.md, same AI prompt → no NPE
+ *
+ * Each TODO marks what to type live.
+ * Commented blocks are the answers — reveal only after asking the audience.
  */
 public class LiveCodingSession {
 
-    // ── Domain model — already done so we can focus on null safety ───────
+    // ── Domain model — pre-built so we can focus on null safety ──────────
     record Coffee(String name, String origin, String brewingInstructions) {}
     record Order(String customerName, Coffee coffee) {}
 
@@ -26,41 +34,68 @@ public class LiveCodingSession {
             "newblend", new Coffee("New Blend", "Rwandan",   null)   // null instructions!
     );
 
+
     // ═════════════════════════════════════════════════════════════════════
-    // STEP 1 — The problem: null is invisible in the type system
-    // Slide: 02_TypicalNPEs
+    // ACT 0 — What the AI generated for us (no CLAUDE.md null-safety rules)
+    //
+    // Prompt: "Write a method that finds a coffee by name and returns its
+    //          brewing instructions in uppercase."
+    //
+    // The AI wrote reasonable-looking code. It compiles. Tests pass on the
+    // happy path. Two NPEs are hiding inside.
     // ═════════════════════════════════════════════════════════════════════
 
-    static void step1_TheProblem() {
-        System.out.println("── Step 1: The NPE problem ──");
+    static String aiGenerated_getBrewingInstructions(String name) {
+        Coffee coffee = MENU.get(name);                       // null if name not in menu
+        return coffee.brewingInstructions().toUpperCase();    // NPE #1 or NPE #2
+    }
 
-        Order order = new Order("Alice", null);
+    static void act0_AIWithoutGuidance() {
+        System.out.println("── Act 0: AI output with no CLAUDE.md guidance ──");
 
-        // TODO: call order.coffee().name() — watch it blow up
-        // System.out.println(order.coffee().name());
+        // Works on the happy path — lulls you into confidence
+        System.out.println(aiGenerated_getBrewingInstructions("espresso"));
 
-        // Nothing in the Order signature says coffee can be null.
-        // The NPE lands far from where null was introduced.
+        // TODO: uncomment one at a time to reveal the two hidden NPEs:
+        // System.out.println(aiGenerated_getBrewingInstructions("newblend"));   // NPE: instructions null
+        // System.out.println(aiGenerated_getBrewingInstructions("coldpresso")); // NPE: coffee null
     }
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // STEP 2 — Solution 1: null checks
+    // ACT 1 — Why: null is invisible in the type system
+    // Slide: 01_WhyNullExists → 02_TypicalNPEs
+    // ═════════════════════════════════════════════════════════════════════
+
+    static void act1_TheProblem() {
+        System.out.println("\n── Act 1: The problem ──");
+
+        // Map.get() returns V — no indication that null is possible
+        // Coffee.brewingInstructions() returns String — no indication either
+        // The AI had no signal to add null checks. Neither does the next developer.
+
+        Order order = new Order("Alice", null);
+
+        // TODO: uncomment — NPE, but nothing in Order(String, Coffee) warns you:
+        // System.out.println(order.coffee().name());
+
+        System.out.println("Order: " + order.customerName() + " — coffee=" + order.coffee());
+    }
+
+
+    // ═════════════════════════════════════════════════════════════════════
+    // ACT 2 — Fix 1: null check at the boundary
     // Slide: 03_Solutions (Null Checks)
     // ═════════════════════════════════════════════════════════════════════
 
-    // TODO: write serve(Order order)
-    //   Step 2a — check at the boundary (one guard, clear message)
-    //   Step 2b — show null check hell (nested ifs) for contrast
-
-    // Step 2a answer:
+    // TODO: write serve(Order order) — one guard at the boundary
     // static String serve(Order order) {
     //     Coffee coffee = order.coffee();
     //     if (coffee == null) return "No coffee on this order.";
     //     return coffee.name();
     // }
 
-    // Step 2b answer (show the horror, don't leave it in):
+    // Contrast (show briefly, don't leave in):
     // static String serveNullCheckHell(Order order) {
     //     if (order != null) {
     //         if (order.coffee() != null) {
@@ -72,43 +107,38 @@ public class LiveCodingSession {
     //     return "No order.";
     // }
 
-    static void step2_NullChecks() {
-        System.out.println("\n── Step 2: Null checks ──");
-        // TODO: call serve() after writing it above
+    static void act2_NullChecks() {
+        System.out.println("\n── Act 2: Null checks ──");
+        // TODO: call serve() with null coffee and with a real coffee
     }
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // STEP 3 — Solution 2: Optional — contract in the type
+    // ACT 3 — Fix 2: Optional — put absence in the type
     // Slide: 03_Solutions (Optional)
     // ═════════════════════════════════════════════════════════════════════
 
     // TODO: write findByName(String name) returning Optional<Coffee>
-    //   return Optional.ofNullable(MENU.get(name));
-
-    // Step 3 answer:
     // static Optional<Coffee> findByName(String name) {
     //     return Optional.ofNullable(MENU.get(name));
     // }
 
-    static void step3_Optional() {
-        System.out.println("\n── Step 3: Optional ──");
+    static void act3_Optional() {
+        System.out.println("\n── Act 3: Optional ──");
 
         // TODO: chain .map(Coffee::name).orElse("Not found") on findByName("espresso")
-        // TODO: show findByName("coldpresso").orElse("Not on menu")
-        // TODO: show findByName("coldpresso").orElseThrow() — and why .get() is bad
+        // TODO: show "coldpresso" → .orElse("Not on menu — try our cold brew")
+        // TODO: show .orElseThrow() — when absence is a bug, not a state
+        // TODO: show why .get() is an anti-pattern (same as null deref, just wrapped)
     }
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // STEP 4 — Solution 3: Records — fail fast at construction
-    // Slide: 04_ModernJavaSolutions1
+    // ACT 4 — Fix 3 + 4: Records (fail fast) + JSpecify (encoded contract)
+    // Slide: 04_ModernJavaSolutions1, 03_Solutions (JSpecify)
     // ═════════════════════════════════════════════════════════════════════
 
-    // TODO: define CoffeeOrder record with compact constructor
-    //   compact constructor calls Objects.requireNonNull on customerName and coffee
-
-    // Step 4 answer:
+    // TODO 4a: define CoffeeOrder — compact constructor rejects null at construction
     // record CoffeeOrder(String customerName, Coffee coffee, int shots) {
     //     CoffeeOrder {
     //         Objects.requireNonNull(customerName);
@@ -117,91 +147,74 @@ public class LiveCodingSession {
     //     }
     // }
 
-    static void step4_Records() {
-        System.out.println("\n── Step 4: Records — fail fast ──");
-
-        // TODO: try new CoffeeOrder("Alice", null, 2) — NPE fires at construction
-        // This is GOOD: null is rejected before the object exists,
-        // not when some method deep in the stack tries to use it.
-    }
-
-
-    // ═════════════════════════════════════════════════════════════════════
-    // STEP 5 — Solution 4: JSpecify — @NullMarked + @Nullable
-    // Slide: 03_Solutions (JSpecify), 08_SolutionDecisions
-    // ═════════════════════════════════════════════════════════════════════
-    //
-    // Key annotations:
-    //   @NullMarked  — every param/field/return in scope is non-null by default
-    //   @Nullable    — this specific element may be null
-    //   @NullUnmarked — opt out (for legacy code)
-    //
-    // NullAway (build plugin) turns violations into compile errors.
-
-    // TODO: annotate the class with @NullMarked (put it above the class declaration)
-
-    // TODO: define CoffeeV2 record with @Nullable brewingInstructions
+    // TODO 4b: add @NullMarked above the class declaration, then define:
     // record CoffeeV2(String name, String origin, @Nullable String brewingInstructions) {}
-
-    // TODO: define OrderV2 record with @Nullable coffee
     // record OrderV2(String customerName, @Nullable CoffeeV2 coffee) {}
 
-    // TODO: write findCoffee(@Nullable String name) returning @Nullable CoffeeV2
-    // static @Nullable CoffeeV2 findCoffee(@Nullable String name) {
-    //     if (name == null) return null;
-    //     return MENU_V2.get(name);   // Map.get() can return null — that is our contract
-    // }
+    static void act4_RecordsAndJSpecify() {
+        System.out.println("\n── Act 4: Records + JSpecify ──");
 
-    static void step5_JSpecify() {
-        System.out.println("\n── Step 5: JSpecify @NullMarked / @Nullable ──");
+        // Records: null is caught at construction, not 20 frames later
+        // TODO: new CoffeeOrder("Bob", null, 2) — NPE fires here, right now
 
-        // TODO: create an OrderV2 with null coffee — show it's allowed (@Nullable)
-        // TODO: show that accessing coffee().name() without a null check
-        //       would be a compile error with NullAway (show the commented line)
-        // TODO: show proper null check before dereference
+        // JSpecify: @Nullable is the contract. The type says it. No comment needed.
+        // TODO: new OrderV2("Jonathan", null) — allowed, @Nullable says so
+        // TODO: show the line that NullAway would reject as a compile error:
+        //   String name = pending.coffee().name();  // dereference @Nullable without check
+
+        // Safe dereference:
+        // TODO: check pending.coffee() != null before calling .name()
     }
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // STEP 6 — @NullUnmarked: bridging legacy code
-    // Slide: 08_SolutionDecisions (Do you control the boundary?)
+    // ACT 5 — Close the loop: update CLAUDE.md live, re-prompt AI
+    //
+    // LIVE EDIT: open CLAUDE.md and add the null-safety rules block.
+    // Then show what the AI generates for the exact same prompt as Act 0.
     // ═════════════════════════════════════════════════════════════════════
 
-    @NullUnmarked  // opts this class out of @NullMarked enforcement
-    static class LegacyCoffeeApi {
-        // Pretend this is third-party / pre-JSpecify code.
-        // Returns null when not found. NullAway won't enforce here.
-        static Coffee findLegacy(String name) {
-            return Map.of("espresso",
-                    new Coffee("Espresso", "Ethiopian", "Grind fine.")).get(name);
-        }
+    // Same prompt, same AI — but now CLAUDE.md has null-safety rules:
+    //   "Write a method that finds a coffee by name and returns its
+    //    brewing instructions in uppercase."
+    //
+    // AI now generates this (no NPEs, Optional contract, @NullMarked context):
+    static Optional<String> aiGenerated_v2_getBrewingInstructions(String name) {
+        return Optional.ofNullable(MENU.get(name))
+                .map(Coffee::brewingInstructions)
+                .map(String::toUpperCase);
     }
 
-    // TODO: write findFromLegacy(String name) returning Optional<Coffee>
-    //   wrap LegacyCoffeeApi.findLegacy with Optional.ofNullable
-    //   null never crosses this boundary inward
+    static void act5_CloseTheLoop() {
+        System.out.println("\n── Act 5: Same prompt — after updating CLAUDE.md ──");
 
-    // Step 6 answer:
-    // static Optional<Coffee> findFromLegacy(String name) {
-    //     return Optional.ofNullable(LegacyCoffeeApi.findLegacy(name));
-    // }
+        // All three cases handled. No explicit null checks. No NPE possible.
+        aiGenerated_v2_getBrewingInstructions("espresso")
+                .ifPresentOrElse(
+                    i -> System.out.println("espresso    : " + i),
+                    () -> System.out.println("espresso    : No instructions"));
 
-    static void step6_LegacyBridge() {
-        System.out.println("\n── Step 6: @NullUnmarked legacy bridge ──");
-        // TODO: call findFromLegacy("espresso") and findFromLegacy("coldpresso")
-        // The Optional wrapper is the single containment point for the legacy null.
+        aiGenerated_v2_getBrewingInstructions("newblend")
+                .ifPresentOrElse(
+                    i -> System.out.println("newblend    : " + i),
+                    () -> System.out.println("newblend    : No instructions"));
+
+        aiGenerated_v2_getBrewingInstructions("coldpresso")
+                .ifPresentOrElse(
+                    i -> System.out.println("coldpresso  : " + i),
+                    () -> System.out.println("coldpresso  : Coffee not found"));
     }
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // MAIN — uncomment each step as you code it
+    // MAIN — uncomment each act as you reach it in the session
     // ═════════════════════════════════════════════════════════════════════
     public static void main(String[] args) {
-        step1_TheProblem();
-        step2_NullChecks();
-        step3_Optional();
-        step4_Records();
-        step5_JSpecify();
-        step6_LegacyBridge();
+        act0_AIWithoutGuidance();
+        act1_TheProblem();
+        act2_NullChecks();
+        act3_Optional();
+        act4_RecordsAndJSpecify();
+        act5_CloseTheLoop();
     }
 }
