@@ -326,40 +326,91 @@ No coffee chosen yet
 
 '''
 
-== Act 5 — Close the loop: update CLAUDE.md live (~5 min)
+== Act 5 — Close the loop: update CLAUDE.md live, then type what the AI now generates (~6 min)
 
 *Show:* `08_SolutionDecisions.adoc` (briefly, for the decision tree)
 
-*Say:* "We've learned four techniques. Let's encode them. Not in a wiki nobody reads — in the file our AI tool reads on every request."
+*Say:* "We've learned four techniques. Let's encode them — not in a wiki nobody reads, but in the file our AI reads on every single request."
 
-*Switch to `CLAUDE.md`. Live-type this block at the bottom:*
+=== Step A — Live-edit CLAUDE.md
+
+*Switch to `CLAUDE.md`. Scroll to the bottom. Type this block live:*
 
 [source,markdown]
 ----
 ## Null Safety
 
-All new code in this project must follow these conventions.
+All new code must follow these conventions.
 They are enforced by `@NullMarked` + NullAway at build time.
 
 - Annotate every new class with `@NullMarked` (org.jspecify)
 - Mark fields, parameters, and return types that may be null with `@Nullable`
 - Public methods must never return `null` — use `Optional<T>` instead
 - Reject null constructor arguments with `Objects.requireNonNull()` in compact constructors
-- Wrap any third-party or legacy API that returns null with `Optional.ofNullable()` at the boundary — null must not cross into `@NullMarked` code
+- Wrap any third-party or legacy API that returns null with `Optional.ofNullable()` at the boundary
 - Use `@NullUnmarked` only on legacy adapter classes, never on new code
-- Never call `.get()` on an Optional without `.isPresent()` — use `.orElse()`, `.orElseThrow()`, or `.ifPresentOrElse()` instead
+- Never call `.get()` on an Optional — use `.orElse()`, `.orElseThrow()`, or `.ifPresentOrElse()`
 ----
 
-*Save `CLAUDE.md`. Now run `act5_CloseTheLoop()`:*
+*Save `CLAUDE.md`.*
+
+*Say:* "That's it. The AI now knows our null conventions. Let's give it the exact same prompt as Act 0 and see what comes back."
+
+=== Step B — Re-prompt the AI, type its output live
+
+*Switch back to `LiveCodingSession.java`. Point to the `BEFORE` comment block in Act 5:*
 
 [source,java]
 ----
-// Already in the file — point to aiGenerated_v2_getBrewingInstructions:
+// ── BEFORE (Act 0 — no CLAUDE.md rules): ─────────────────────────────
+//
+//   static String aiGenerated_getBrewingInstructions(String name) {
+//       Coffee coffee = MENU.get(name);                    // null if absent
+//       return coffee.brewingInstructions().toUpperCase(); // NPE #1 or #2
+//   }
+----
+
+*Say:* "This is what we saw in Act 0. Raw `String` return. Two hidden NPEs. Now watch what comes back for the same prompt."
+
+*Type the new AI output below the `AFTER` TODO comment — live:*
+
+[source,java]
+----
 static Optional<String> aiGenerated_v2_getBrewingInstructions(String name) {
     return Optional.ofNullable(MENU.get(name))
             .map(Coffee::brewingInstructions)
             .map(String::toUpperCase);
 }
+----
+
+*Pause. Let the audience see both versions on screen together.*
+
+*Say:*
+
+* "Return type changed from `String` to `Optional<String>` — absence is now in the type."
+* "No `MENU.get()` assigned to a variable. No null check. The Optional chain handles both absent cases."
+* "Same problem. Same AI. The only thing that changed is `CLAUDE.md`."
+
+=== Step C — Fill in the calls and run
+
+*Inside `act5_CloseTheLoop()`, type:*
+
+[source,java]
+----
+aiGenerated_v2_getBrewingInstructions("espresso")
+        .ifPresentOrElse(
+            i -> System.out.println("espresso    : " + i),
+            () -> System.out.println("espresso    : No instructions"));
+
+aiGenerated_v2_getBrewingInstructions("newblend")
+        .ifPresentOrElse(
+            i -> System.out.println("newblend    : " + i),
+            () -> System.out.println("newblend    : No instructions"));
+
+aiGenerated_v2_getBrewingInstructions("coldpresso")
+        .ifPresentOrElse(
+            i -> System.out.println("coldpresso  : " + i),
+            () -> System.out.println("coldpresso  : Coffee not found"));
 ----
 
 *Run it.*
@@ -371,26 +422,7 @@ newblend    : No instructions
 coldpresso  : Coffee not found
 ----
 
-*Say:*
-
-* "Same prompt. Same AI. Different context file."
-* "Three cases — coffee not found, instructions null, all good — handled without a single explicit null check in the business code."
-* "You didn't add a linter rule. You didn't write a policy document. You taught your AI what null safety means in *this* codebase."
-
-*Show the diff between `aiGenerated_getBrewingInstructions` (Act 0) and `aiGenerated_v2_getBrewingInstructions` (Act 5) side by side:*
-
-----
-Before (Act 0):                         After (Act 5, with CLAUDE.md):
-─────────────────────────────────────   ─────────────────────────────────────────────────────
-static String                           static Optional<String>
-aiGenerated_getBrewingInstructions      aiGenerated_v2_getBrewingInstructions
-        (String name) {                         (String name) {
-    Coffee coffee = MENU.get(name);         return Optional.ofNullable(MENU.get(name))
-    return coffee                                   .map(Coffee::brewingInstructions)
-             .brewingInstructions()                 .map(String::toUpperCase);
-             .toUpperCase();            }
-}
-----
+*Say:* "All three cases — happy path, null instructions, coffee not found — handled without a single explicit null check. You didn't ship a linter. You didn't write a policy document. You taught your AI what null safety means in *this* codebase. That rule lives in the repo, travels with the code, and every AI session from now on starts with it."
 
 '''
 

@@ -168,41 +168,43 @@ public class LiveCodingSession {
 
 
     // ═════════════════════════════════════════════════════════════════════
-    // ACT 5 — Close the loop: update CLAUDE.md live, re-prompt AI
+    // ACT 5 — Close the loop: update CLAUDE.md live, then type what the AI
+    //         now generates for the exact same prompt as Act 0.
     //
-    // LIVE EDIT: open CLAUDE.md and add the null-safety rules block.
-    // Then show what the AI generates for the exact same prompt as Act 0.
+    // STEP A: live-edit CLAUDE.md — add the null-safety rules (see script).
+    // STEP B: give the AI the same prompt as Act 0 and paste its output below.
+    // STEP C: run act5_CloseTheLoop() — all three cases handled, no NPE.
     // ═════════════════════════════════════════════════════════════════════
 
-    // Same prompt, same AI — but now CLAUDE.md has null-safety rules:
-    //   "Write a method that finds a coffee by name and returns its
-    //    brewing instructions in uppercase."
+    // ── BEFORE (Act 0 — no CLAUDE.md rules): ─────────────────────────────
     //
-    // AI now generates this (no NPEs, Optional contract, @NullMarked context):
-    static Optional<String> aiGenerated_v2_getBrewingInstructions(String name) {
-        return Optional.ofNullable(MENU.get(name))
-                .map(Coffee::brewingInstructions)
-                .map(String::toUpperCase);
-    }
+    //   static String aiGenerated_getBrewingInstructions(String name) {
+    //       Coffee coffee = MENU.get(name);                    // null if absent
+    //       return coffee.brewingInstructions().toUpperCase(); // NPE #1 or #2
+    //   }
+    //
+    // ── AFTER (Act 5 — CLAUDE.md has null-safety rules): ─────────────────
+    //
+    // Prompt: "Write a method that finds a coffee by name and returns its
+    //          brewing instructions in uppercase."
+    //
+    // TODO: type the AI's new output here.
+    //   What changes?  return type, no raw null, Optional chain.
+    //
+    // static Optional<String> aiGenerated_v2_getBrewingInstructions(String name) {
+    //     return Optional.ofNullable(MENU.get(name))
+    //             .map(Coffee::brewingInstructions)
+    //             .map(String::toUpperCase);
+    // }
 
     static void act5_CloseTheLoop() {
         System.out.println("\n── Act 5: Same prompt — after updating CLAUDE.md ──");
 
-        // All three cases handled. No explicit null checks. No NPE possible.
-        aiGenerated_v2_getBrewingInstructions("espresso")
-                .ifPresentOrElse(
-                    i -> System.out.println("espresso    : " + i),
-                    () -> System.out.println("espresso    : No instructions"));
-
-        aiGenerated_v2_getBrewingInstructions("newblend")
-                .ifPresentOrElse(
-                    i -> System.out.println("newblend    : " + i),
-                    () -> System.out.println("newblend    : No instructions"));
-
-        aiGenerated_v2_getBrewingInstructions("coldpresso")
-                .ifPresentOrElse(
-                    i -> System.out.println("coldpresso  : " + i),
-                    () -> System.out.println("coldpresso  : Coffee not found"));
+        // TODO: call aiGenerated_v2_getBrewingInstructions for all three cases
+        //   "espresso"   → has instructions
+        //   "newblend"   → coffee exists, instructions null
+        //   "coldpresso" → coffee not in menu
+        // Use .ifPresentOrElse() — no explicit null checks anywhere
     }
 
 
