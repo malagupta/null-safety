@@ -1,69 +1,119 @@
-= Live-Coding Session Script: Null Safety in Modern Java
+= Session Script — Null Safety in Modern Java
 :icons: font
 :toc: left
-:toc-title: Steps
+:toc-title: Acts
 :toclevels: 2
 
-== Before you start
+== Approach rationale
 
-**File to keep open:**  `LiveCodingSession.java` +
-**Reference (completed code):** `JSpecifyDemo.java`, `SolutionsCurrent.java` +
-**Run config:** `LiveCodingSession.main()` +
-**Font size:** 20+, wrap long lines OFF, line numbers ON
+*Why Approach 2 (AI-first, AI-last):*
 
-[NOTE]
-Each step ends with _"Let me run it"_ → run `main()` → show output.
-Uncomment the NPE line in step 1, then re-comment it before moving on.
+* Opens with something every attendee is living right now: AI-generated code that silently hides NPEs.
+* Stakes are higher — "even AI doesn't know this about your codebase."
+* The session content becomes the *solution* to a problem the audience has already felt.
+* Satisfying loop: you start and end with the AI. The ending payoff — "you just taught your AI about null safety" — is immediately actionable.
 
 '''
 
-== Step 0 — Framing (no code, ~2 min)
+== Setup (before you speak)
 
-*Show:* `Agenda.adoc` → `01_WhyNullExists.adoc` → `02_TypicalNPEs.adoc`
+Open three files side by side:
+
+[cols="1,2,2"]
+|===
+| Panel | File | Purpose
+| Left  | `CLAUDE.md` | You will live-edit this in Act 5
+| Centre | `LiveCodingSession.java` | The coding file
+| Right  | `JSpecifyDemo.java` | Completed reference — read-only fallback
+|===
+
+Run config: `LiveCodingSession.main()` +
+Font size: 20+, line numbers ON, word wrap OFF
+
+'''
+
+== Act 0 — The AI trap (~4 min)
+
+*Show:* `CLAUDE.md` (the bare starting version — no null-safety rules)
 
 *Say:*
 
-* Tony Hoare, 1965: "I call it my billion-dollar mistake."
-* Three reasons null exists: optional attribute, lazy load, GC marker.
-* Three reasons it hurts: non-determinism in stack traces, signatures hide null returns, defensive null checks bury real bugs.
-* Today: six practical techniques, live code, all runnable.
+* "We use AI tools to write Java every day. Here's what our AI generated last week when we asked it something simple."
+* "The prompt was: _Write a method that finds a coffee by name and returns its brewing instructions in uppercase._"
+* "Read `aiGenerated_getBrewingInstructions`. It looks completely reasonable. Let's run it."
+
+*Inside `act0_AIWithoutGuidance()`, the happy path is already there. Run it.*
+
+----
+── Act 0: AI output with no CLAUDE.md guidance ──
+Grind fine. 90°C.
+----
+
+*Say:* "Happy path. Looks great. Now let me try 'newblend'."
+
+*Uncomment the `newblend` line:*
+
+[source,java]
+----
+System.out.println(aiGenerated_getBrewingInstructions("newblend"));   // NPE: instructions null
+----
+
+*Run it.*
+
+----
+Exception in thread "main" java.lang.NullPointerException
+    at LiveCodingSession.aiGenerated_getBrewingInstructions(...)
+----
+
+*Say:* "New Blend is in the menu — the coffee exists. But its brewing instructions are null. The AI didn't add a null check because nothing in the type said to."
+
+*Uncomment the `coldpresso` line, run again.*
+
+----
+Exception in thread "main" java.lang.NullPointerException
+    at LiveCodingSession.aiGenerated_getBrewingInstructions(...)
+----
+
+*Say:* "Coldpresso isn't in the menu. `Map.get()` returns null. Same crash, different reason. Same invisible root cause. This isn't the AI's fault — it had no context about our null conventions. That's the session."
+
+*Re-comment both crashing lines before continuing.*
 
 '''
 
-== Step 1 — The problem (2 min)
+== Act 1 — Why: null is invisible in the type system (~3 min)
 
-*Show:* `02_TypicalNPEs.adoc`
+*Show:* `01_WhyNullExists.adoc` → `02_TypicalNPEs.adoc`
 
-*In `LiveCodingSession.java`, inside `step1_TheProblem()`:*
+*Say:*
+
+* "Three reasons null exists: optional attribute, lazy load, GC marker. All three are legitimate. None of them show up in the type."
+* "Tony Hoare: 'I call it my billion-dollar mistake.' He invented null in 1965 to make it easy. The compiler accepted it. Developers paid for it."
+* "Three patterns that hurt us: stack traces don't say _which_ link in a chain was null; method signatures don't say whether they return null; defensive null checks added now hide real bugs introduced later."
+
+*In `act1_TheProblem()`, point to the `Order` constructor:*
 
 [source,java]
 ----
 Order order = new Order("Alice", null);
-System.out.println(order.coffee().name()); // <-- uncomment this
 ----
 
-*Run it.* Output:
+*Say:* "This compiles. Nothing warns you that coffee is null. Watch what happens two calls later."
+
+*Uncomment the crash line, run it, re-comment.*
 
 ----
 Exception in thread "main" java.lang.NullPointerException
-    at LiveCodingSession.step1_TheProblem(LiveCodingSession.java:...)
 ----
 
-*Say:*
-
-* `Order(String, Coffee)` — nothing in the signature says `coffee` can be null.
-* The NPE lands at `.name()`, not at the `new Order(...)` call where null was introduced.
-* In a real stack trace, these are 20 frames apart.
-
-*Re-comment the crashing line before continuing.*
+*Say:* "The NPE lands at `.name()`, not at the `new Order(...)` line where null was passed. In production, those two lines are 20 stack frames apart. The AI had the same problem: nothing in the type gave it a signal."
 
 '''
 
-== Step 2 — Null checks: boundary guard vs. null check hell (~3 min)
+== Act 2 — Fix 1: null check at the boundary (~3 min)
 
-*Show:* `03_Solutions.adoc` (Null Checks section)
+*Show:* `03_Solutions.adoc` — Null Checks section
 
-*Above `step2_NullChecks()`, type:*
+*Uncomment and type `serve()` above `act2_NullChecks()`:*
 
 [source,java]
 ----
@@ -74,7 +124,7 @@ static String serve(Order order) {
 }
 ----
 
-*Inside `step2_NullChecks()`:*
+*Inside `act2_NullChecks()`, type:*
 
 [source,java]
 ----
@@ -83,26 +133,32 @@ System.out.println(serve(new Order("Bob",
         new Coffee("Espresso", "Ethiopian", "Grind fine."))));
 ----
 
-*Run it.* Expected output:
+*Run it.*
 
 ----
-── Step 2: Null checks ──
+── Act 2: Null checks ──
 No coffee on this order.
 Espresso
 ----
 
-*Say:* One guard at the boundary, clear message. +
-Now show the alternative — paste `serveNullCheckHell` from the comment block (or from `SolutionsCurrent.java:30`). Show it to the audience. Don't run it. Delete/collapse it.
+*Say:* "One guard. One message. The happy path is unchanged."
 
-*Say:* Every nested `if` is a question you forgot to ask at the boundary.
+*Now reveal the null check hell comment block (or paste from `SolutionsCurrent.java:30`):*
+
+*Say:* "This is what happens when you check at every level instead of the boundary. Every `if` is a question you forgot to ask upfront. Show it, then delete it."
+
+*Limitations to mention:*
+
+* Null checks can't be enforced — nothing stops the next developer from skipping them.
+* They're invisible in signatures — the caller still doesn't know `coffee` can be null.
 
 '''
 
-== Step 3 — Optional: contract in the type (~4 min)
+== Act 3 — Fix 2: Optional — put absence in the type (~4 min)
 
-*Show:* `03_Solutions.adoc` (Optional section)
+*Show:* `03_Solutions.adoc` — Optional section
 
-*Type the method above `step3_Optional()`:*
+*Type `findByName` above `act3_Optional()`:*
 
 [source,java]
 ----
@@ -111,11 +167,12 @@ static Optional<Coffee> findByName(String name) {
 }
 ----
 
-*Inside `step3_Optional()`:*
+*Say:* "The return type is now the contract. `Optional<Coffee>` forces every caller to handle absence. The AI can see this. The compiler can see this."
+
+*Inside `act3_Optional()`, type:*
 
 [source,java]
 ----
-// Caller sees Optional<Coffee> — absence is in the type
 String found = findByName("espresso")
         .map(Coffee::name)
         .map(String::toUpperCase)
@@ -127,38 +184,41 @@ String missing = findByName("coldpresso")
         .orElse("Not on menu — try our cold brew");
 System.out.println("Missing : " + missing);
 
-// orElseThrow — absence is an error
+// orElseThrow: absence here is a bug, not a valid state
 findByName("coldpresso")
         .orElseThrow(() ->
-                new IllegalStateException("coldpresso must be configured"));
+                new IllegalStateException("coldpresso must be configured — check setup"));
 ----
 
-*Run it.* Expected output:
+*Run it.*
 
 ----
-── Step 3: Optional ──
+── Act 3: Optional ──
 Found   : ESPRESSO
 Missing : Not on menu — try our cold brew
-Exception in thread "main" java.lang.IllegalStateException: coldpresso must be configured
+Exception in thread "main" java.lang.IllegalStateException: coldpresso must be configured — check setup
 ----
 
 *Say:*
 
-* `Optional<Coffee>` is the contract. Callers know to handle absence.
-* `.map()` skips the chain if empty — no null checks needed inside.
-* `.orElseThrow()` is the explicit "this should have existed" signal.
-* **Anti-pattern:** `.get()` without `.isPresent()` — same as a null deref, just wrapped. Never use it.
+* "`.map()` is a no-op if empty — no null checks in the chain."
+* "`.orElse()` is the default. `.orElseThrow()` is the signal that absence is a defect."
+* **Anti-pattern to call out:** "`.get()` without a check is the same as a null dereference, just wrapped in an Optional. Never use it."
 
 [TIP]
-Optional is for *return types* only. Not fields. Not parameters. Not collections.
+Optional is for *return types* only. Not fields. Not constructor parameters. Not collections.
 
 '''
 
-== Step 4 — Records: fail fast at construction (~3 min)
+== Act 4 — Fix 3 + 4: Records (fail fast) + JSpecify (encoded contract) (~7 min)
+
+=== Part A — Records
 
 *Show:* `04_ModernJavaSolutions1.adoc`
 
-*Type the record inside the class (above `step4_Records()`):*
+*Ask the audience:* "Where's the earliest moment we can reject a null?" (Answer: at construction.)
+
+*Type `CoffeeOrder` above `act4_RecordsAndJSpecify()`:*
 
 [source,java]
 ----
@@ -171,7 +231,7 @@ record CoffeeOrder(String customerName, Coffee coffee, int shots) {
 }
 ----
 
-*Inside `step4_Records()`:*
+*Inside `act4_RecordsAndJSpecify()`, type:*
 
 [source,java]
 ----
@@ -182,32 +242,25 @@ System.out.println("Good : " + good.customerName() + " / " + good.coffee().name(
 try {
     CoffeeOrder bad = new CoffeeOrder("Bob", null, 1);
 } catch (NullPointerException e) {
-    System.out.println("Null rejected at construction, not later");
+    System.out.println("Null rejected at construction — not 20 frames later");
 }
 ----
 
-*Run it.* Expected output:
+*Run it.*
 
 ----
-── Step 4: Records — fail fast ──
+── Act 4: Records + JSpecify ──
 Good : Alice / Espresso
-Null rejected at construction, not later
+Null rejected at construction — not 20 frames later
 ----
 
-*Say:*
+*Say:* "Records are effectively final — the compact constructor runs before the object exists. Null never gets in. The NPE stack trace now points directly at the problem."
 
-* Compact constructor runs before the record instance exists.
-* Null is rejected at the earliest possible moment — construction.
-* Records are effectively final: no mutating a field to null after the fact.
-* **Bonus:** show `04_ModernJavaSolutions1b.adoc` — pattern matching deconstructs records without needing null checks for each level.
+=== Part B — JSpecify
 
-'''
+*Show:* `03_Solutions.adoc` — JSpecify section
 
-== Step 5 — JSpecify: @NullMarked + @Nullable (~6 min)
-
-*Show:* `03_Solutions.adoc` (JSpecify section) → `08_SolutionDecisions.adoc`
-
-*Add `@NullMarked` to the class declaration:*
+*Add `@NullMarked` above the class declaration:*
 
 [source,java]
 ----
@@ -215,169 +268,197 @@ Null rejected at construction, not later
 public class LiveCodingSession {
 ----
 
-*Say:* Every field, parameter, and return type in this class is now non-null *by default*. Silence means non-null. `@Nullable` breaks the silence deliberately.
+*Say:* "This one annotation changes the default for every field, parameter, and return type in this class: *silence means non-null*. `@Nullable` breaks that silence deliberately."
 
-*Add these two records (above `step5_JSpecify()`):*
+*Type the two annotated records:*
 
 [source,java]
 ----
 record CoffeeV2(
-        String name,
-        String origin,
-        @Nullable String brewingInstructions   // absence is valid
+        String name,                               // non-null — @NullMarked default
+        String origin,                             // non-null — @NullMarked default
+        @Nullable String brewingInstructions       // null is valid — annotation says so
 ) {}
 
 record OrderV2(
-        String customerName,
-        @Nullable CoffeeV2 coffee              // customer may not have chosen yet
+        String customerName,                       // non-null — @NullMarked default
+        @Nullable CoffeeV2 coffee                  // null is valid — customer may not have chosen
 ) {}
 ----
 
-*Inside `step5_JSpecify()`:*
+*Add to `act4_RecordsAndJSpecify()`:*
 
 [source,java]
 ----
-// @Nullable coffee is allowed — the annotation makes it explicit
-OrderV2 pending = new OrderV2("Jonathan", null);
+OrderV2 pending = new OrderV2("Jonathan", null);  // allowed — @Nullable says so
 System.out.println("Pending : " + pending.customerName() + " / coffee=" + pending.coffee());
 
-// Safe: check before dereference
+// NullAway (build plugin) would reject this as a COMPILE ERROR:
+// String name = pending.coffee().name();  // dereference @Nullable without null check
+
 if (pending.coffee() != null) {
     System.out.println("Coffee  : " + pending.coffee().name());
 } else {
-    System.out.println("No coffee yet");
+    System.out.println("No coffee chosen yet");
 }
-
-// NullAway would REJECT this (show it, don't run):
-// String name = pending.coffee().name();  // dereference @Nullable without check
 ----
 
-*Run it.* Expected output:
+*Run it.*
 
 ----
-── Step 5: JSpecify @NullMarked / @Nullable ──
 Pending : Jonathan / coffee=null
-No coffee yet
+No coffee chosen yet
 ----
 
 *Say:*
 
-* Without NullAway, the annotations are documentation — enforced by convention.
-* With NullAway (a build plugin), the commented line becomes a *compile error*, not a runtime NPE.
-* Reference `JSpecifyDemo.java` for the full five-demo version: return types, parameters, chained access.
+* "Without NullAway these are documentation — enforced by convention."
+* "With NullAway they become *compile errors*, not runtime surprises."
+* "Reference `JSpecifyDemo.java` for the full picture: return types, parameters, chained access, `@NullUnmarked` for legacy bridges."
 
 [source,xml]
-.NullAway pom.xml snippet (show in editor):
+.NullAway setup (show in pom.xml):
 ----
 <arg>-XepOpt:NullAway:AnnotatedPackages=com.gupta.nullsafety</arg>
 <arg>-XepOpt:NullAway:JSpecifyMode=true</arg>
+<arg>-XepOpt:NullAway:OnlyNullMarked=true</arg>
 ----
 
 '''
 
-== Step 6 — @NullUnmarked: legacy bridge (~3 min)
+== Act 5 — Close the loop: update CLAUDE.md live (~5 min)
 
-*Show:* `08_SolutionDecisions.adoc` ("Do you control the boundary?")
+*Show:* `08_SolutionDecisions.adoc` (briefly, for the decision tree)
 
-*Point to `LegacyCoffeeApi` in the starter file.* It's already there. Explain `@NullUnmarked`.
+*Say:* "We've learned four techniques. Let's encode them. Not in a wiki nobody reads — in the file our AI tool reads on every request."
 
-*Type `findFromLegacy` above `step6_LegacyBridge()`:*
+*Switch to `CLAUDE.md`. Live-type this block at the bottom:*
+
+[source,markdown]
+----
+## Null Safety
+
+All new code in this project must follow these conventions.
+They are enforced by `@NullMarked` + NullAway at build time.
+
+- Annotate every new class with `@NullMarked` (org.jspecify)
+- Mark fields, parameters, and return types that may be null with `@Nullable`
+- Public methods must never return `null` — use `Optional<T>` instead
+- Reject null constructor arguments with `Objects.requireNonNull()` in compact constructors
+- Wrap any third-party or legacy API that returns null with `Optional.ofNullable()` at the boundary — null must not cross into `@NullMarked` code
+- Use `@NullUnmarked` only on legacy adapter classes, never on new code
+- Never call `.get()` on an Optional without `.isPresent()` — use `.orElse()`, `.orElseThrow()`, or `.ifPresentOrElse()` instead
+----
+
+*Save `CLAUDE.md`. Now run `act5_CloseTheLoop()`:*
 
 [source,java]
 ----
-static Optional<Coffee> findFromLegacy(String name) {
-    return Optional.ofNullable(LegacyCoffeeApi.findLegacy(name));
+// Already in the file — point to aiGenerated_v2_getBrewingInstructions:
+static Optional<String> aiGenerated_v2_getBrewingInstructions(String name) {
+    return Optional.ofNullable(MENU.get(name))
+            .map(Coffee::brewingInstructions)
+            .map(String::toUpperCase);
 }
 ----
 
-*Inside `step6_LegacyBridge()`:*
-
-[source,java]
-----
-findFromLegacy("espresso")
-        .ifPresentOrElse(
-            c  -> System.out.println("Legacy found   : " + c.name()),
-            () -> System.out.println("Legacy missing : espresso")
-        );
-
-findFromLegacy("coldpresso")
-        .ifPresentOrElse(
-            c  -> System.out.println("Legacy found   : " + c.name()),
-            () -> System.out.println("Legacy missing : coldpresso")
-        );
-----
-
-*Run it.* Expected output:
+*Run it.*
 
 ----
-── Step 6: @NullUnmarked legacy bridge ──
-Legacy found   : Espresso
-Legacy missing : coldpresso
+── Act 5: Same prompt — after updating CLAUDE.md ──
+espresso    : GRIND FINE. 90°C.
+newblend    : No instructions
+coldpresso  : Coffee not found
 ----
 
 *Say:*
 
-* `@NullUnmarked` tells NullAway: "I know this code is unsafe — don't enforce here."
-* `Optional.ofNullable` is the containment wall. Null never crosses this boundary inward.
-* One adapter method. Every caller inside `@NullMarked` territory is safe.
+* "Same prompt. Same AI. Different context file."
+* "Three cases — coffee not found, instructions null, all good — handled without a single explicit null check in the business code."
+* "You didn't add a linter rule. You didn't write a policy document. You taught your AI what null safety means in *this* codebase."
+
+*Show the diff between `aiGenerated_getBrewingInstructions` (Act 0) and `aiGenerated_v2_getBrewingInstructions` (Act 5) side by side:*
+
+----
+Before (Act 0):                         After (Act 5, with CLAUDE.md):
+─────────────────────────────────────   ─────────────────────────────────────────────────────
+static String                           static Optional<String>
+aiGenerated_getBrewingInstructions      aiGenerated_v2_getBrewingInstructions
+        (String name) {                         (String name) {
+    Coffee coffee = MENU.get(name);         return Optional.ofNullable(MENU.get(name))
+    return coffee                                   .map(Coffee::brewingInstructions)
+             .brewingInstructions()                 .map(String::toUpperCase);
+             .toUpperCase();            }
+}
+----
 
 '''
 
-== Step 7 — Decision guide + the future (~2 min, no new code)
+== Wrap-up — The decision guide (~2 min, no code)
 
 *Show:* `08_SolutionDecisions.adoc`
 
-*Recap the three questions:*
-
-[cols="1,2"]
+[cols="<2,<3"]
 |===
-| *Is null a valid domain state?*
-| Yes → `@Nullable` + `Optional` return type +
-  No  → `Objects.requireNonNull` at construction
+| Question | Answer
 
-| *Do you control the boundary?*
+| Is null a valid domain state, or a bug?
+| Valid → `@Nullable` + `Optional` return +
+  Bug   → `Objects.requireNonNull()` at construction
+
+| Do you control the code at this boundary?
 | Yes → `@NullMarked` + `@Nullable` throughout +
-  No  → adapter wraps with `Optional.ofNullable` at the edge
+  No  → `Optional.ofNullable()` adapter wraps the edge
 
-| *What Java version?*
-| 8–11: Optional + requireNonNull + JSpecify+NullAway +
-  16+: add Records +
-  17+: add Sealed classes +
-  21+: add switch null case, pattern matching
+| What Java version are you on?
+| 8–11  → Optional + requireNonNull + JSpecify + NullAway +
+  16+   → add Records +
+  17+   → add Sealed classes +
+  21+   → add switch null case and pattern matching
 |===
 
 *Show:* `09_TheFuture.adoc`
 
-*Say:* Project Valhalla proposes `String!` — a non-null instance variable in the language itself. Until then, JSpecify+NullAway is the closest we have to compiler-enforced null safety in Java.
+*Say:* "Project Valhalla proposes `String!` — a non-null type built into the language. Until Valhalla ships, JSpecify + NullAway + a well-kept `CLAUDE.md` is as close as Java gets to compiler-enforced null safety."
 
 '''
 
-== Full expected output (final state)
+== Full expected output (all acts)
 
 ----
-── Step 1: The NPE problem ──
-── Step 2: Null checks ──
+── Act 0: AI output with no CLAUDE.md guidance ──
+Grind fine. 90°C.
+[NPE on newblend, then NPE on coldpresso — shown and re-commented]
+
+── Act 1: The problem ──
+Order: Alice — coffee=null
+[NPE on order.coffee().name() — shown and re-commented]
+
+── Act 2: Null checks ──
 No coffee on this order.
 Espresso
-── Step 3: Optional ──
+
+── Act 3: Optional ──
 Found   : ESPRESSO
 Missing : Not on menu — try our cold brew
-[IllegalStateException thrown]
-── Step 4: Records — fail fast ──
+[IllegalStateException thrown for coldpresso]
+
+── Act 4: Records + JSpecify ──
 Good : Alice / Espresso
-Null rejected at construction, not later
-── Step 5: JSpecify @NullMarked / @Nullable ──
+Null rejected at construction — not 20 frames later
 Pending : Jonathan / coffee=null
-No coffee yet
-── Step 6: @NullUnmarked legacy bridge ──
-Legacy found   : Espresso
-Legacy missing : coldpresso
+No coffee chosen yet
+
+── Act 5: Same prompt — after updating CLAUDE.md ──
+espresso    : GRIND FINE. 90°C.
+newblend    : No instructions
+coldpresso  : Coffee not found
 ----
 
 == Completed reference
 
-For any step you run out of time on, the full completed versions are in:
+If you run out of time on any act, full working versions are in:
 
-* `SolutionsCurrent.java` — Steps 1–4
-* `JSpecifyDemo.java` — Step 5 (5 full demos) and Step 6
-* `SolutionsJSpecify.java` — minimal JSpecify example
+* `SolutionsCurrent.java` — Acts 2, 3, 4 (records)
+* `JSpecifyDemo.java` — Act 4 (JSpecify, 5 full demos) + legacy bridge
+* `SolutionsJSpecify.java` — minimal JSpecify starter
