@@ -5,7 +5,7 @@
 [.small]
 [source, java, line, linenums, start=147]
 ----
-inventory.findCcoffee().brewingSuggestion().toUpperCase();
+inventory.findCoffee().brewingSuggestion().toUpperCase();
 ----
 Stack trace indicates NPE on *line 147* — but which call caused it?
 

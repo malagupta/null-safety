@@ -1,20 +1,17 @@
-== About the speakers
+== Mala Gupta
 :figure-caption!:
 
 image::../image/MG_Mugshot.jpg[Mala Gupta, 150, 150, float="left", align="center"]
-image::../image/CVG_Mugshot.png[Chandra Guntur, 150, 150, float="right", align="center"]
 
 |===
-^| *Mala Gupta* ^| *Chandra Guntur*
-| Self-employed, Author | Sr. Principal Engineer @ Financial Institution
-2+^| *Java Champion*
-| *JUG Leader* link:https://twitter.com/DelhiJUG[@DelhiJUG] | *JUG Leader* link:https://twitter.com/nyjavasig[@NYJavaSIG] and link:https://twitter.com/GardenStateJUG[@GardenStateJUG]
-| *Website*: https://malagupta.com | *Website*: https://cguntur.me
-| *Github*: https://github.com/malagupta | *Github*: https://github.com/c-guntur
-| *Twitter*: https://twitter.com/eMalaGupta[@eMalaGupta] | *Twitter*: https://twitter.com/cguntur[@CGuntur]
+| *Author*
+| *Java Champion*
+| *JUG Leader* link:https://twitter.com/DelhiJUG[@DelhiJUG]
+| *Website*: https://malagupta.com
+| *Github*: https://github.com/malagupta
+| *Twitter*: https://twitter.com/eMalaGupta[@eMalaGupta]
 |===
 
-'''
 [caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
 |===
 | &nbsp;

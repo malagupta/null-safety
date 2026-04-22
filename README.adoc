@@ -28,14 +28,14 @@ using the right patterns, tools, and language features
 https://github.com/malagupta/null-safety
 ....
 .^a| {empty} +
-*Link to content*: link:https://github.com/malagupta/null-safety[] +
+*Link to content*: link:https://github.com/malagupta/null-safety-java[] +
 &#160;
 |===
 '''
 
 [caption=" ", .center, cols="<40%, ^20%, >40%", width=95%, grid=none, frame=none]
 |===
-| link:assets/docs/AboutSpeakers.adoc[◀️ About: Speakers]
+| link:assets/docs/AboutSpeakers.adoc[◀️ About: Speaker]
 | &nbsp;
 | link:assets/docs/Agenda.adoc[Agenda ▶️]
 |===

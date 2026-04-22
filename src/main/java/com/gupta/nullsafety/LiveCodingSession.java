@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Live-coding session — Approach 2: Start with AI, close with AI.
+ * Live-coding session
  *
  * Flow:
  *   Act 0 — Same prompt to AI, no CLAUDE.md rules → NPE
