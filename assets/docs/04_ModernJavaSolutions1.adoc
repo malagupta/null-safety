@@ -2,7 +2,7 @@
 :icons: font
 
 == Records
-Records have a capability of stopping `null` at construction time.
+Records have a capability of addressing `null` at construction time.
 
 This prevents any nulls creeping in.
 

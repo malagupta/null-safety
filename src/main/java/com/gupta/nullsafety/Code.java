@@ -3,7 +3,7 @@ package com.gupta.nullsafety;
 import java.util.Map;
 import java.util.Optional;
 
-public class AIGeneratedCode {
+public class Code {
 
     record Coffee(String name, String origin, String brewingInstructions) {}
     record Order(String customerName, Coffee coffee) {}
@@ -11,7 +11,7 @@ public class AIGeneratedCode {
     static final Map<String, Coffee> MENU = Map.of(
             "espresso", new Coffee("Espresso", "Ethiopian", "Grind fine. 90°C."),
             "latte", new Coffee("Latte", "Colombian", "Shot + steamed milk."),
-            "newblend", new Coffee("New Blend", "Rwandan", null)   // null instructions!
+            "newblend", new Coffee("New Blend", "Rwandan", null)
     );
 
     /*
